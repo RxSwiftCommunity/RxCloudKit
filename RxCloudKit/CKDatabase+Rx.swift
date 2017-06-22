@@ -7,30 +7,9 @@
 //
 
 import RxSwift
-import RxCocoa
 import CloudKit
 
-enum RxCKError: Error {
-    case fetchRecord
-    case saveRecord
-    case unknown
-}
-
-public protocol Entity {
-
-    associatedtype T: CKRecord
-
-    static var type: String { get }
-
-    var name: String { get }
-
-    init(record: T)
-
-    func update(_ record: T)
-
-}
-
-public extension Reactive where Base: CKDatabase {
+private extension Reactive where Base: CKDatabase {
 
     private func create<E: Entity>(_ type: E.Type = E.self) -> Single<E.T> {
         //        let recordID = CKRecordID(recordName: E.name)
@@ -61,7 +40,7 @@ public extension Reactive where Base: CKDatabase {
                     return
                 }
                 guard record != nil else {
-                    single(.error(RxCKError.saveRecord))
+                    single(.error(RxCKError.fetchRecord))
                     return
                 }
                 single(.success(record as! E.T))
@@ -69,6 +48,26 @@ public extension Reactive where Base: CKDatabase {
             return Disposables.create()
         }
     }
+    
+    private func delete<E: Entity>(_ entity: E) -> Single<E.I> {
+        return get(entity).flatMap { (record) -> Single<E.I> in
+            return Single<E.I>.create { single in
+                self.base.delete(withRecordID: record.recordID) { (recordID, error) in
+                    if let error = error {
+                        single(.error(error))
+                        return
+                    }
+                    guard recordID != nil else {
+                        single(.error(RxCKError.deleteRecord))
+                        return
+                    }
+                    single(.success(recordID as! E.I))
+                }
+                return Disposables.create()
+            }
+        }
+    }
+
 
 }
 
