@@ -9,7 +9,7 @@
 import RxSwift
 import CloudKit
 
-private extension Reactive where Base: CKDatabase {
+public extension Reactive where Base: CKDatabase {
 
     private func create<E: Entity>(_ type: E.Type = E.self) -> Single<E.T> {
         //        let recordID = CKRecordID(recordName: E.name)
@@ -31,7 +31,7 @@ private extension Reactive where Base: CKDatabase {
         }
     }
 
-    private func get<E: Entity>(_ entity: E) -> Single<E.T> {
+    private func fetch<E: Entity>(_ entity: E) -> Single<E.T> {
         let recordID = CKRecordID(recordName: entity.name)
         return Single<E.T>.create { single in
             self.base.fetch(withRecordID: recordID) { (record, error) in
@@ -48,9 +48,15 @@ private extension Reactive where Base: CKDatabase {
             return Disposables.create()
         }
     }
-    
-    private func delete<E: Entity>(_ entity: E) -> Single<E.I> {
-        return get(entity).flatMap { (record) -> Single<E.I> in
+
+    func update<E: Entity>(_ entity: E) -> Single<E.T> {
+        return self.fetch(entity).catchError { (error) -> PrimitiveSequence<SingleTrait, E.T> in
+            return self.create(E.self)
+        }
+    }
+
+    func delete<E: Entity>(_ entity: E) -> Single<E.I> {
+        return fetch(entity).flatMap { (record) -> Single<E.I> in
             return Single<E.I>.create { single in
                 self.base.delete(withRecordID: record.recordID) { (recordID, error) in
                     if let error = error {
