@@ -1,5 +1,5 @@
 //
-//  RxCloudKit.swift
+//  CKDatabase+Rx.swift
 //  RxCloudKit
 //
 //  Created by Maxim Volgin on 22/06/2017.
@@ -74,6 +74,14 @@ public extension Reactive where Base: CKDatabase {
         }
     }
 
+    func entities<E: Entity>(_ type: E.Type = E.self, predicate: NSPredicate = NSPredicate(value: true), sortDescriptors: [NSSortDescriptor]? = nil, limit: Int = 99) -> Observable<[E.T]> {
+        return Observable.create { observer in
+            let query = CKQuery(recordType: type.type, predicate:  predicate)
+            query.sortDescriptors = sortDescriptors
+            _ = Fetcher<E>(observer: observer, database: self.base, query: query, limit: limit)
+            return Disposables.create()
+        }.toArray()
+    }
 
 }
 

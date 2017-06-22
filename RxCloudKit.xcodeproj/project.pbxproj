@@ -14,6 +14,7 @@
 		944AB4331EFC2AB9003852DF /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 944AB4321EFC2AB9003852DF /* RxSwift.framework */; };
 		948486DB1EFC4153009FBD3A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DA1EFC4153009FBD3A /* Errors.swift */; };
 		948486DD1EFC415F009FBD3A /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DC1EFC415F009FBD3A /* Entities.swift */; };
+		948486DF1EFC6047009FBD3A /* Fetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DE1EFC6047009FBD3A /* Fetcher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,7 @@
 		944AB4321EFC2AB9003852DF /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		948486DA1EFC4153009FBD3A /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		948486DC1EFC415F009FBD3A /* Entities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
+		948486DE1EFC6047009FBD3A /* Fetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 			children = (
 				948486DA1EFC4153009FBD3A /* Errors.swift */,
 				948486DC1EFC415F009FBD3A /* Entities.swift */,
+				948486DE1EFC6047009FBD3A /* Fetcher.swift */,
 				944AB42E1EFC29DE003852DF /* CKDatabase+Rx.swift */,
 				944AB4171EFC28C6003852DF /* RxCloudKit.h */,
 				944AB4181EFC28C6003852DF /* Info.plist */,
@@ -238,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				948486DD1EFC415F009FBD3A /* Entities.swift in Sources */,
+				948486DF1EFC6047009FBD3A /* Fetcher.swift in Sources */,
 				948486DB1EFC4153009FBD3A /* Errors.swift in Sources */,
 				944AB42F1EFC29DE003852DF /* CKDatabase+Rx.swift in Sources */,
 			);
