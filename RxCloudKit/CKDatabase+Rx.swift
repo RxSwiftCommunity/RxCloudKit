@@ -54,6 +54,24 @@ public extension Reactive where Base: CKDatabase {
             return self.create(E.self)
         }
     }
+    
+    func save<E: Entity>(_ entity: E) -> Single<E.T> {
+        let record = entity.asCKRecord()
+        return Single<E.T>.create { single in
+            self.base.save(record) { (record, error) in
+                if let error = error {
+                    single(.error(error))
+                    return
+                }
+                guard record != nil else {
+                    single(.error(RxCKError.saveRecord))
+                    return
+                }
+                single(.success(record as! E.T))
+            }
+            return Disposables.create()
+        }
+    }
 
     func delete<E: Entity>(_ entity: E) -> Single<E.I> {
         return fetch(entity).flatMap { (record) -> Single<E.I> in

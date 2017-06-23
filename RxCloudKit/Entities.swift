@@ -22,4 +22,6 @@ public protocol Entity {
     
     func update(_ record: T)
     
+    func asCKRecord() -> T
+    
 }
