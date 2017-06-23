@@ -11,7 +11,7 @@ import CloudKit
 
 final class Fetcher<E: Entity> {
     
-    typealias Observer = AnyObserver<E.T>
+    typealias Observer = AnyObserver<CKRecord>
     
     private let observer: Observer
     private let database: CKDatabase
@@ -25,7 +25,7 @@ final class Fetcher<E: Entity> {
     }
     
     private func recordFetchedBlock(record: CKRecord) {
-        self.observer.on(.next(record as! E.T))
+        self.observer.on(.next(record))
     }
     
     private func queryCompletionBlock(cursor: CKQueryCursor?, error: Error?) {

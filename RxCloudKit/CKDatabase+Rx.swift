@@ -11,11 +11,11 @@ import CloudKit
 
 public extension Reactive where Base: CKDatabase {
 
-    private func create<E: Entity>(_ type: E.Type = E.self) -> Single<E.T> {
+    private func create<E: Entity>(_ type: E.Type = E.self) -> Single<CKRecord> {
         //        let recordID = CKRecordID(recordName: E.name)
         //        let record = CKRecord(recordType: E.type, recordID: recordID)
         let record = CKRecord(recordType: E.type)
-        return Single<E.T>.create { single in
+        return Single<CKRecord>.create { single in
             self.base.save(record) { (record, error) in
                 if let error = error {
                     single(.error(error))
@@ -25,15 +25,15 @@ public extension Reactive where Base: CKDatabase {
                     single(.error(RxCKError.saveRecord))
                     return
                 }
-                single(.success(record as! E.T))
+                single(.success(record!))
             }
             return Disposables.create()
         }
     }
 
-    private func fetch<E: Entity>(_ entity: E) -> Single<E.T> {
+    private func fetch<E: Entity>(_ entity: E) -> Single<CKRecord> {
         let recordID = CKRecordID(recordName: entity.name)
-        return Single<E.T>.create { single in
+        return Single<CKRecord>.create { single in
             self.base.fetch(withRecordID: recordID) { (record, error) in
                 if let error = error {
                     single(.error(error))
@@ -43,21 +43,21 @@ public extension Reactive where Base: CKDatabase {
                     single(.error(RxCKError.fetchRecord))
                     return
                 }
-                single(.success(record as! E.T))
+                single(.success(record!))
             }
             return Disposables.create()
         }
     }
 
-    func update<E: Entity>(_ entity: E) -> Single<E.T> {
-        return self.fetch(entity).catchError { (error) -> PrimitiveSequence<SingleTrait, E.T> in
+    func update<E: Entity>(_ entity: E) -> Single<CKRecord> {
+        return self.fetch(entity).catchError { (error) -> PrimitiveSequence<SingleTrait, CKRecord> in
             return self.create(E.self)
         }
     }
     
-    func save<E: Entity>(_ entity: E) -> Single<E.T> {
+    func save<E: Entity>(_ entity: E) -> Single<CKRecord> {
         let record = entity.asCKRecord()
-        return Single<E.T>.create { single in
+        return Single<CKRecord>.create { single in
             self.base.save(record) { (record, error) in
                 if let error = error {
                     single(.error(error))
@@ -67,15 +67,15 @@ public extension Reactive where Base: CKDatabase {
                     single(.error(RxCKError.saveRecord))
                     return
                 }
-                single(.success(record as! E.T))
+                single(.success(record!))
             }
             return Disposables.create()
         }
     }
 
-    func delete<E: Entity>(_ entity: E) -> Single<E.I> {
-        return fetch(entity).flatMap { (record) -> Single<E.I> in
-            return Single<E.I>.create { single in
+    func delete<E: Entity>(_ entity: E) -> Single<CKRecordID> {
+        return fetch(entity).flatMap { (record) -> PrimitiveSequence<SingleTrait, CKRecordID> in
+            return Single<CKRecordID>.create { single in
                 self.base.delete(withRecordID: record.recordID) { (recordID, error) in
                     if let error = error {
                         single(.error(error))
@@ -85,14 +85,14 @@ public extension Reactive where Base: CKDatabase {
                         single(.error(RxCKError.deleteRecord))
                         return
                     }
-                    single(.success(recordID as! E.I))
+                    single(.success(recordID!))
                 }
                 return Disposables.create()
             }
         }
     }
 
-    func entities<E: Entity>(_ type: E.Type = E.self, predicate: NSPredicate = NSPredicate(value: true), sortDescriptors: [NSSortDescriptor]? = nil, limit: Int = 99) -> Observable<[E.T]> {
+    func entities<E: Entity>(_ type: E.Type = E.self, predicate: NSPredicate = NSPredicate(value: true), sortDescriptors: [NSSortDescriptor]? = nil, limit: Int = 99) -> Observable<[CKRecord]> {
         return Observable.create { observer in
             let query = CKQuery(recordType: type.type, predicate:  predicate)
             query.sortDescriptors = sortDescriptors
