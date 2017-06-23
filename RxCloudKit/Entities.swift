@@ -11,17 +11,39 @@ import CloudKit
 
 public protocol Entity {
     
-    associatedtype T: CKRecord
-    associatedtype I: CKRecordID
-    
     static var type: String { get }
     
     var name: String { get }
     
-    init(record: T)
+    var id: CKRecordID { get }
     
-    func update(_ record: T)
+    init()
     
-    func asCKRecord() -> T
+    init(name: String)
+    
+    init(record: CKRecord)
+    
+    func update(_ record: CKRecord)
+    
+    func asCKRecord() -> CKRecord
+    
+}
+
+public extension Entity {
+    
+    var id: CKRecordID {
+        return CKRecordID(recordName: self.name)
+    }
+    
+    init() {
+        let record = CKRecord(recordType: Self.type)
+        self.init(record: record)
+    }
+    
+    init(name: String) {
+        let id = CKRecordID(recordName: name)
+        let record = CKRecord(recordType: Self.type, recordID: id)
+        self.init(record: record)
+    }
     
 }
