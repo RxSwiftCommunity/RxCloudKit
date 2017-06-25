@@ -15,6 +15,9 @@
 		948486DB1EFC4153009FBD3A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DA1EFC4153009FBD3A /* Errors.swift */; };
 		948486DD1EFC415F009FBD3A /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DC1EFC415F009FBD3A /* Entities.swift */; };
 		948486DF1EFC6047009FBD3A /* Fetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DE1EFC6047009FBD3A /* Fetcher.swift */; };
+		948630911F0040F600752EEB /* Declarations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948630901F0040F600752EEB /* Declarations.swift */; };
+		948630931F00459600752EEB /* CKRecord+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948630921F00459600752EEB /* CKRecord+Rx.swift */; };
+		948630951F0045A300752EEB /* CKSubscription+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948630941F0045A300752EEB /* CKSubscription+Rx.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +42,9 @@
 		948486DA1EFC4153009FBD3A /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		948486DC1EFC415F009FBD3A /* Entities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		948486DE1EFC6047009FBD3A /* Fetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetcher.swift; sourceTree = "<group>"; };
+		948630901F0040F600752EEB /* Declarations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Declarations.swift; sourceTree = "<group>"; };
+		948630921F00459600752EEB /* CKRecord+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKRecord+Rx.swift"; sourceTree = "<group>"; };
+		948630941F0045A300752EEB /* CKSubscription+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKSubscription+Rx.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +93,8 @@
 				948486DC1EFC415F009FBD3A /* Entities.swift */,
 				948486DE1EFC6047009FBD3A /* Fetcher.swift */,
 				944AB42E1EFC29DE003852DF /* CKDatabase+Rx.swift */,
+				948630921F00459600752EEB /* CKRecord+Rx.swift */,
+				948630941F0045A300752EEB /* CKSubscription+Rx.swift */,
 				944AB4171EFC28C6003852DF /* RxCloudKit.h */,
 				944AB4181EFC28C6003852DF /* Info.plist */,
 			);
@@ -96,6 +104,7 @@
 		944AB4211EFC28C7003852DF /* RxCloudKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				948630901F0040F600752EEB /* Declarations.swift */,
 				944AB4221EFC28C7003852DF /* RxCloudKitTests.swift */,
 				944AB4241EFC28C7003852DF /* Info.plist */,
 			);
@@ -240,7 +249,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				948630931F00459600752EEB /* CKRecord+Rx.swift in Sources */,
 				948486DD1EFC415F009FBD3A /* Entities.swift in Sources */,
+				948630951F0045A300752EEB /* CKSubscription+Rx.swift in Sources */,
 				948486DF1EFC6047009FBD3A /* Fetcher.swift in Sources */,
 				948486DB1EFC4153009FBD3A /* Errors.swift in Sources */,
 				944AB42F1EFC29DE003852DF /* CKDatabase+Rx.swift in Sources */,
@@ -251,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				948630911F0040F600752EEB /* Declarations.swift in Sources */,
 				944AB4231EFC28C7003852DF /* RxCloudKitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,14 +9,14 @@
 import RxSwift
 import CloudKit
 
-public protocol Entity {
+public protocol RxCKRecord {
     
     static var type: String { get }
     
-    var name: String { get }
-    
-    var id: CKRecordID { get }
-    
+//    var name: String { get }
+//    
+//    var id: CKRecordID { get }
+//    
     init()
     
     init(name: String)
@@ -25,16 +25,16 @@ public protocol Entity {
     
     func update(_ record: CKRecord)
     
-    func asCKRecord() -> CKRecord
+//    func asCKRecord() -> CKRecord
     
 }
 
-public extension Entity {
+public extension RxCKRecord {
     
-    var id: CKRecordID {
-        return CKRecordID(recordName: self.name)
-    }
-    
+//    var id: CKRecordID {
+//        return CKRecordID(recordName: self.name)
+//    }
+//    
     init() {
         let record = CKRecord(recordType: Self.type)
         self.init(record: record)
@@ -45,5 +45,14 @@ public extension Entity {
         let record = CKRecord(recordType: Self.type, recordID: id)
         self.init(record: record)
     }
+    
+}
+
+public protocol RxCKSubscription {
+    
+    
+}
+
+public extension RxCKSubscription {
     
 }

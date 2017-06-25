@@ -9,7 +9,7 @@
 import RxSwift
 import CloudKit
 
-final class Fetcher<E: Entity> {
+final class Fetcher<E: RxCKRecord> {
     
     typealias Observer = AnyObserver<CKRecord>
     

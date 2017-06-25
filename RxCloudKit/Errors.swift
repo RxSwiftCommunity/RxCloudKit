@@ -9,8 +9,8 @@
 import RxSwift
 
 enum RxCKError: Error {
-    case deleteRecord
-    case fetchRecord
-    case saveRecord
+    case delete
+    case fetch
+    case save
     case unknown
 }
