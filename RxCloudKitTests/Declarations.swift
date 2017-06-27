@@ -35,6 +35,49 @@ extension MyRecord: RxCloudKit.RxCKRecord {
 
 }
 
+
+enum MySerializer {
+    case intField(String, Int)
+    case boolField(String, Bool)
+    case stringField(String, String)
+}
+
+
+enum MyRecordE {
+    case myIntField(Int)
+    case myBoolField(Bool)
+    case myStringField(String)
+}
+
+extension MySerializer {
+    
+    func p(inout f: Any) {
+        switch self {
+        case .intField(let name, let value):
+            print("\(self)=\(value)")
+            f = 123
+//            self.myStringField = record["myStringField"] as? String ?? ""
+//            record["myIntField"] = self.myIntField as CKRecordValue
+            break
+        default:
+           break
+        }
+    }
+    
+    func setValue<T>(inout object:T, key: String) {
+        switch key {
+        case "String":
+            object = ("A String" as? T)!
+        case "UIColor":
+            object = (UIColor.whiteColor() as? T)!
+        case "Bool":
+            object = (true as? T)!
+        default:
+            println("Unhandled key: \(key)")
+        }
+    }
+}
+
 public protocol RxCKSerializer {
     
     static var type: String { get }
