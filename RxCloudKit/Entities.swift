@@ -9,6 +9,8 @@
 import RxSwift
 import CloudKit
 
+// TODO
+
 public protocol RxCKRecord {
 
     static var type: String { get }
@@ -27,10 +29,6 @@ public protocol RxCKRecord {
 
 //    func asCKRecord() -> CKRecord
 
-}
-
-private struct AssociatedKeys {
-    static var record = "record"
 }
 
 public extension RxCKRecord {
@@ -54,15 +52,6 @@ public extension RxCKRecord {
 //        self.record = record
 //    }
 
-    var record: CKRecord {
-        get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.record) as! CKRecord
-        }
-
-        set(value) {
-            objc_setAssociatedObject(self, &AssociatedKeys.record, value, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
 
 }
 
