@@ -25,7 +25,7 @@ public extension Reactive where Base: CKDatabase {
         return CKRecord.rx.delete(with: recordID, in: self.base)
     }
     
-    public static func fetch(recordType: String, predicate: NSPredicate = NSPredicate(value: true), sortDescriptors: [NSSortDescriptor]? = nil, limit: Int = 99) -> Observable<CKRecord> {
+    public func fetch(recordType: String, predicate: NSPredicate = NSPredicate(value: true), sortDescriptors: [NSSortDescriptor]? = nil, limit: Int = 99) -> Observable<CKRecord> {
         return CKRecord.rx.fetch(recordType: recordType, predicate: predicate, sortDescriptors: sortDescriptors, limit: limit, in: self.base)
     }
 
@@ -34,17 +34,6 @@ public extension Reactive where Base: CKDatabase {
     public func save(subscription: CKSubscription) -> Single<CKSubscription> {
         return subscription.rx.save(in: self.base)
     }
-
-
-
-//    func entities<E: RxCKRecord>(_ type: E.Type = E.self, predicate: NSPredicate = NSPredicate(value: true), sortDescriptors: [NSSortDescriptor]? = nil, limit: Int = 99) -> Observable<[CKRecord]> {
-//        return Observable.create { observer in
-//            let query = CKQuery(recordType: type.type, predicate:  predicate)
-//            query.sortDescriptors = sortDescriptors
-//            _ = Fetcher<E>(observer: observer, database: self.base, query: query, limit: limit)
-//            return Disposables.create()
-//        }.toArray()
-//    }
 
 }
 
