@@ -14,3 +14,9 @@ enum RxCKError: Error {
     case save
     case unknown
 }
+
+enum SerializationError: Error {
+    case structRequired
+    case unknownEntity(name: String)
+    case unsupportedSubType(label: String?)
+}

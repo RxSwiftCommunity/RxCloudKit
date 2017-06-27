@@ -18,16 +18,16 @@ public protocol RxCKRecord {
 //    var name: String { get }
 //
 //    var id: CKRecordID { get }
-    
+
     init()
 
     init(name: String)
 
     init(record: CKRecord)
-    
-    func update(_ record: CKRecord)
 
-//    func asCKRecord() -> CKRecord
+    func update(record: CKRecord)
+
+
 
 }
 
@@ -37,21 +37,36 @@ public extension RxCKRecord {
 //        return CKRecordID(recordName: self.name)
 //    }
 //
-    init() {
+    public init() {
         let record = CKRecord(recordType: Self.type)
         self.init(record: record)
     }
 
-    init(name: String) {
+    public init(name: String) {
         let id = CKRecordID(recordName: name)
         let record = CKRecord(recordType: Self.type, recordID: id)
         self.init(record: record)
     }
-    
+
 //    init(record: CKRecord) {
 //        self.record = record
 //    }
 
+    public func update(record: CKRecord) throws {
+        let mirror = Mirror(reflecting: self)
+        if let displayStyle = mirror.displayStyle {
+            guard displayStyle == .struct else {
+                throw SerializationError.structRequired
+            }
+            for case let (label?, anyValue) in mirror.children {
+                if let value = anyValue as? CKRecordValue {
+                    record.setValue(value, forKey: label)
+                } else {
+                    throw SerializationError.unsupportedSubType(label: label)
+                }
+            }
+        }
+    }
 
 }
 

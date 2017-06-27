@@ -10,7 +10,7 @@ import RxSwift
 import CloudKit
 
 public extension Reactive where Base: CKRecord {
-
+    
     public func save(in database: CKDatabase) -> Single<CKRecord> {
         return Single<CKRecord>.create { single in
             database.save(self.base) { (result, error) in
