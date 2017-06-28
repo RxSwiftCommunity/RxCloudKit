@@ -25,12 +25,12 @@ public protocol RxCKRecord {
 
 public extension RxCKRecord {
 
-    public func create() -> CKRecord {
+    public static func create() -> CKRecord {
         let record = CKRecord(recordType: Self.type)
         return record
     }
 
-    public func create(name: String) -> CKRecord {
+    public static func create(name: String) -> CKRecord {
         let id = CKRecordID(recordName: name)
         let record = CKRecord(recordType: Self.type, recordID: id)
         return record
