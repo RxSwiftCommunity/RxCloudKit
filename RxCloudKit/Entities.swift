@@ -17,7 +17,7 @@ public protocol RxCKRecord {
 
     static func create(name: String) -> CKRecord
 
-    func update(record: CKRecord)
+    func update(record: CKRecord) throws
     
     mutating func parse(record: CKRecord) // must be implemented by struct
 
@@ -53,6 +53,7 @@ public extension RxCKRecord {
     }
 
 }
+
 
 // TODO
 
