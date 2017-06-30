@@ -9,48 +9,32 @@
 import RxSwift
 import CloudKit
 
-// TODO
-
 public protocol RxCKRecord {
 
     static var type: String { get }
 
-//    var name: String { get }
-//
-//    var id: CKRecordID { get }
+    static func create() -> CKRecord
 
-    init()
+    static func create(name: String) -> CKRecord
 
-    init(name: String)
-
-    init(record: CKRecord)
-
-    func update(record: CKRecord)
-
-
+    func update(record: CKRecord) throws
+    
+    mutating func parse(record: CKRecord) // must be implemented by struct
 
 }
 
 public extension RxCKRecord {
 
-//    var id: CKRecordID {
-//        return CKRecordID(recordName: self.name)
-//    }
-//
-    public init() {
+    public static func create() -> CKRecord {
         let record = CKRecord(recordType: Self.type)
-        self.init(record: record)
+        return record
     }
 
-    public init(name: String) {
+    public static func create(name: String) -> CKRecord {
         let id = CKRecordID(recordName: name)
         let record = CKRecord(recordType: Self.type, recordID: id)
-        self.init(record: record)
+        return record
     }
-
-//    init(record: CKRecord) {
-//        self.record = record
-//    }
 
     public func update(record: CKRecord) throws {
         let mirror = Mirror(reflecting: self)
@@ -69,6 +53,9 @@ public extension RxCKRecord {
     }
 
 }
+
+
+// TODO
 
 public protocol RxCKSubscription {
 
