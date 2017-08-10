@@ -27,5 +27,21 @@ public extension Reactive where Base: CKRecordZone {
             return Disposables.create()
         }
     }
+
+    public static func modify(recordZonesToSave: [CKRecordZone]?, recordZoneIDsToDelete: [CKRecordZoneID]?, in database: CKDatabase) -> Single<([CKRecordZone]?, [CKRecordZoneID]?)> {
+        return Single<([CKRecordZone]?, [CKRecordZoneID]?)>.create { single in
+            let operation = CKModifyRecordZonesOperation(recordZonesToSave: recordZonesToSave, recordZoneIDsToDelete: recordZoneIDsToDelete)
+            operation.qualityOfService = .userInitiated
+            operation.modifyRecordZonesCompletionBlock = { (saved, deleted, error) in
+                if let error = error {
+                    single(.error(error))
+                    return
+                }
+                single(.success((saved, deleted)))
+            }
+            database.add(operation)
+            return Disposables.create()
+        }
+    }
     
 }

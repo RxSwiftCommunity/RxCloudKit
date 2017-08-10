@@ -17,6 +17,10 @@ public extension Reactive where Base: CKDatabase {
         return CKRecordZone.rx.fetch(with: recordZoneID, in: self.base)
     }
 
+    public func modify(recordZonesToSave: [CKRecordZone]?, recordZoneIDsToDelete: [CKRecordZoneID]?) -> Single<([CKRecordZone]?, [CKRecordZoneID]?)> {
+        return CKRecordZone.rx.modify(recordZonesToSave: recordZonesToSave, recordZoneIDsToDelete: recordZoneIDsToDelete, in: self.base)
+    }
+        
     // MARK:- records
 
     public func save(record: CKRecord) -> Single<CKRecord> {
