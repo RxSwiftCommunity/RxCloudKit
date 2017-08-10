@@ -24,7 +24,7 @@ public class Cache {
         self.sharedSubscriptionID = sharedSubscriptionID
     }
 
-    public func onFirstLaunch() {
+    public func applicationDidFinishLaunching() {
 
         // TODO fetch zones, for missing zones create zones
 
@@ -49,9 +49,9 @@ public class Cache {
                     print("Error: ", error)
                 }
             }.disposed(by: disposeBag)
-            
+
         }
-        
+
         let subscription = CKDatabaseSubscription.init(subscriptionID: privateSubscriptionID)
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true
@@ -64,13 +64,30 @@ public class Cache {
             case .error(let error):
                 print("Error: ", error)
             }
-            }.disposed(by: disposeBag)
-        
+        }.disposed(by: disposeBag)
+
         // TODO same for shared
 
+        //let createZoneGroup = DispatchGroup()
+        //createZoneGroup.enter()
+        //self.createZoneGroup.leave()
+        // Fetch any changes from the server that happened while the app wasn't running
+//        createZoneGroup.notify(queue: DispatchQueue.global()) {
+//            if self.createdCustomZone {
+//                self.fetchChanges(in: .private) { }
+//                //                self.fetchChanges(in: .shared) { }
+//            }
+//        }
 
+    }
 
+    public func applicationDidReceiveRemoteNotification(userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        let dict = userInfo as! [String: NSObject]
+        guard let notification: CKDatabaseNotification = CKNotification(fromRemoteNotificationDictionary: dict) as? CKDatabaseNotification else { return }
 
+//        viewController!.fetchChanges(in: notification.databaseScope) {
+//            completionHandler(.newData)
+//        }
     }
 
 
