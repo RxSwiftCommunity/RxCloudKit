@@ -61,6 +61,22 @@ public extension Reactive where Base: CKSubscription {
             return Disposables.create()
         }
     }
+    
+    public static func modify(subscriptionsToSave: [CKSubscription]?, subscriptionIDsToDelete: [String]?, in database: CKDatabase) -> Single<([CKSubscription]?, [String]?)> {
+        return Single<([CKSubscription]?, [String]?)>.create { single in
+            let operation = CKModifySubscriptionsOperation(subscriptionsToSave: subscriptionsToSave, subscriptionIDsToDelete: subscriptionIDsToDelete)
+            operation.qualityOfService = .utility
+            operation.modifySubscriptionsCompletionBlock = { (subscriptions, deletedIds, error) in
+                if let error = error {
+                    single(.error(error))
+                    return
+                }
+                single(.success((subscriptions, deletedIds)))
+            }
+            database.add(operation)
+            return Disposables.create()
+        }
+    }
 
     /*
      func fetchAllSubscriptions(completionHandler: ([CKSubscription]?, Error?) -> Void)
