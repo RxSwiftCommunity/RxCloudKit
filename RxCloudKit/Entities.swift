@@ -21,6 +21,12 @@ class Zone {
             self.id = CKRecordZoneID(zoneName: name, ownerName: CKOwnerDefaultName)
         }
     }
+    
+    public static func create(name: String) -> CKRecordZone {
+        let zone = CKRecordZone(zoneName: name)
+        return zone
+    }
+    
 }
 
 // MARK:- records

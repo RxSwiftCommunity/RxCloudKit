@@ -41,5 +41,13 @@ public extension Reactive where Base: CKDatabase {
         return subscription.rx.save(in: self.base)
     }
 
+    public func fetch(with subscriptionID: String) -> Single<CKSubscription> {
+        return CKSubscription.rx.fetch(with: subscriptionID, in: self.base)
+    }
+
+    public func delete(with subscriptionID: String) -> Single<String> {
+        return CKSubscription.rx.delete(with: subscriptionID, in: self.base)
+    }    
+    
 }
 
