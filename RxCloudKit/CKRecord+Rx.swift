@@ -45,7 +45,6 @@ public extension Reactive where Base: CKRecord {
         }
     }
 
-
     public static func delete(with recordID: CKRecordID, in database: CKDatabase) -> Single<CKRecordID> {
         return Single<CKRecordID>.create { single in
             database.delete(withRecordID: recordID) { (recordID, error) in
@@ -71,7 +70,5 @@ public extension Reactive where Base: CKRecord {
             return Disposables.create()
         }
     }
-
-
 
 }

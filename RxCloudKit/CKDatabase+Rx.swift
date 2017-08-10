@@ -11,6 +11,12 @@ import CloudKit
 
 public extension Reactive where Base: CKDatabase {
 
+    // MARK:- zones
+    
+    public func fetch(with recordZoneID: CKRecordZoneID) -> Single<CKRecordZone> {
+        return CKRecordZone.rx.fetch(with: recordZoneID, in: self.base)
+    }
+
     // MARK:- records
 
     public func save(record: CKRecord) -> Single<CKRecord> {

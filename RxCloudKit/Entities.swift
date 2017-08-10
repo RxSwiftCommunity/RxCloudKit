@@ -9,6 +9,22 @@
 import RxSwift
 import CloudKit
 
+// MARK:- zones
+
+class Zone {
+    let id: CKRecordZoneID
+    
+    init(name: String) {
+        if #available(iOS 10.0, *) {
+            self.id = CKRecordZoneID(zoneName: name, ownerName: CKCurrentUserDefaultName)
+        } else {
+            self.id = CKRecordZoneID(zoneName: name, ownerName: CKOwnerDefaultName)
+        }
+    }
+}
+
+// MARK:- records
+
 public protocol RxCKRecord {
 
     static var type: String { get }
@@ -35,7 +51,7 @@ public extension RxCKRecord {
         let record = CKRecord(recordType: Self.type, recordID: id)
         return record
     }
-
+    
     public func update(record: CKRecord) throws {
         let mirror = Mirror(reflecting: self)
         if let displayStyle = mirror.displayStyle {
@@ -54,8 +70,7 @@ public extension RxCKRecord {
 
 }
 
-
-// TODO
+// MARK:- subscriptions
 
 public protocol RxCKSubscription {
 
