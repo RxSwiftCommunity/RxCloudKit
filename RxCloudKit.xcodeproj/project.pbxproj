@@ -19,6 +19,8 @@
 		948630931F00459600752EEB /* CKRecord+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948630921F00459600752EEB /* CKRecord+Rx.swift */; };
 		948630951F0045A300752EEB /* CKSubscription+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948630941F0045A300752EEB /* CKSubscription+Rx.swift */; };
 		BA4F7E231F3C21370044F60E /* CKRecordZone+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E221F3C21370044F60E /* CKRecordZone+Rx.swift */; };
+		BA4F7E291F3CC7000044F60E /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E281F3CC7000044F60E /* Cache.swift */; };
+		BA4F7E2B1F3CC8520044F60E /* Cloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2A1F3CC8520044F60E /* Cloud.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,8 @@
 		948630921F00459600752EEB /* CKRecord+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKRecord+Rx.swift"; sourceTree = "<group>"; };
 		948630941F0045A300752EEB /* CKSubscription+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKSubscription+Rx.swift"; sourceTree = "<group>"; };
 		BA4F7E221F3C21370044F60E /* CKRecordZone+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKRecordZone+Rx.swift"; sourceTree = "<group>"; };
+		BA4F7E281F3CC7000044F60E /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		BA4F7E2A1F3CC8520044F60E /* Cloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cloud.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +96,8 @@
 		944AB4161EFC28C6003852DF /* RxCloudKit */ = {
 			isa = PBXGroup;
 			children = (
+				BA4F7E2A1F3CC8520044F60E /* Cloud.swift */,
+				BA4F7E281F3CC7000044F60E /* Cache.swift */,
 				948486DA1EFC4153009FBD3A /* Errors.swift */,
 				948486DC1EFC415F009FBD3A /* Entities.swift */,
 				948486DE1EFC6047009FBD3A /* RecordFetcher.swift */,
@@ -256,7 +262,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				948630931F00459600752EEB /* CKRecord+Rx.swift in Sources */,
+				BA4F7E2B1F3CC8520044F60E /* Cloud.swift in Sources */,
 				948486DD1EFC415F009FBD3A /* Entities.swift in Sources */,
+				BA4F7E291F3CC7000044F60E /* Cache.swift in Sources */,
 				948630951F0045A300752EEB /* CKSubscription+Rx.swift in Sources */,
 				948486DF1EFC6047009FBD3A /* RecordFetcher.swift in Sources */,
 				BA4F7E231F3C21370044F60E /* CKRecordZone+Rx.swift in Sources */,
@@ -401,7 +409,7 @@
 				);
 				INFOPLIST_FILE = RxCloudKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = maxvol.RxCloudKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -426,7 +434,7 @@
 				);
 				INFOPLIST_FILE = RxCloudKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = maxvol.RxCloudKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";

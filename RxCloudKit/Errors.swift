@@ -8,14 +8,14 @@
 
 import RxSwift
 
-enum RxCKError: Error {
+public enum RxCKError: Error {
     case delete
     case fetch
     case save
     case unknown
 }
 
-enum SerializationError: Error {
+public enum SerializationError: Error {
     case structRequired
     case unknownEntity(name: String)
     case unsupportedSubType(label: String?)
