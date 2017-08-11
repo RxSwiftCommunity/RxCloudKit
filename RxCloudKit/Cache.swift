@@ -98,7 +98,7 @@ public final class Cache {
     }
 
     public func fetchDatabaseChanges(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        let token = defaults.object(forKey: Cache.privateTokenKey) as? CKServerChangeToken
+        let token = self.token(for: Cache.privateTokenKey)
         cloud.privateDB.rx.fetchChanges(previousServerChangeToken: token).subscribe { event in
             switch event {
             case .next(let zoneEvent):
@@ -113,7 +113,7 @@ public final class Cache {
                     self.delegate.deleteCache(in: zoneID)
                 case .token(let token):
                     print("token: \(token)")
-                    self.defaults.set(token, forKey: Cache.privateTokenKey)
+                    self.save(token: token, for: Cache.privateTokenKey)
                     self.processAndPurgeCachedZones(fetchCompletionHandler: completionHandler)
                 }
                 
@@ -190,4 +190,19 @@ public final class Cache {
         self.fetchZoneChanges(recordZoneIDs: recordZoneIDs, fetchCompletionHandler: completionHandler)
     }
 
+
+    // MARK:- token
+    
+    private func save(token: CKServerChangeToken, for key: String) {
+        self.defaults.set(NSKeyedArchiver.archivedData(withRootObject: token), forKey: key)
+    }
+    
+    private func token(for key: String) -> CKServerChangeToken? {
+        
+        if let object = self.defaults.object(forKey: key) as? NSData {
+            return NSKeyedUnarchiver.unarchiveObject(with: object as Data) as? CKServerChangeToken
+        }
+        
+        return nil
+    }
 }
