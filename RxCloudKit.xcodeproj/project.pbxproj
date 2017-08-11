@@ -23,6 +23,7 @@
 		BA4F7E2B1F3CC8520044F60E /* Cloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2A1F3CC8520044F60E /* Cloud.swift */; };
 		BA4F7E2D1F3D6F210044F60E /* ZoneChangeFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2C1F3D6F210044F60E /* ZoneChangeFetcher.swift */; };
 		BA4F7E2F1F3D7E2F0044F60E /* RecordChangeFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2E1F3D7E2F0044F60E /* RecordChangeFetcher.swift */; };
+		BA9E7A0B1F3E254700F450EA /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9E7A0A1F3E254700F450EA /* Token.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		BA4F7E2A1F3CC8520044F60E /* Cloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cloud.swift; sourceTree = "<group>"; };
 		BA4F7E2C1F3D6F210044F60E /* ZoneChangeFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneChangeFetcher.swift; sourceTree = "<group>"; };
 		BA4F7E2E1F3D7E2F0044F60E /* RecordChangeFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordChangeFetcher.swift; sourceTree = "<group>"; };
+		BA9E7A0A1F3E254700F450EA /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				BA4F7E2A1F3CC8520044F60E /* Cloud.swift */,
+				BA9E7A0A1F3E254700F450EA /* Token.swift */,
 				BA4F7E281F3CC7000044F60E /* Cache.swift */,
 				948486DA1EFC4153009FBD3A /* Errors.swift */,
 				948486DC1EFC415F009FBD3A /* Entities.swift */,
@@ -270,6 +273,7 @@
 				BA4F7E2F1F3D7E2F0044F60E /* RecordChangeFetcher.swift in Sources */,
 				948630931F00459600752EEB /* CKRecord+Rx.swift in Sources */,
 				BA4F7E2B1F3CC8520044F60E /* Cloud.swift in Sources */,
+				BA9E7A0B1F3E254700F450EA /* Token.swift in Sources */,
 				948486DD1EFC415F009FBD3A /* Entities.swift in Sources */,
 				BA4F7E291F3CC7000044F60E /* Cache.swift in Sources */,
 				948630951F0045A300752EEB /* CKSubscription+Rx.swift in Sources */,
