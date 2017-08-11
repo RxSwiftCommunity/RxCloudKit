@@ -9,8 +9,9 @@
 import RxSwift
 import CloudKit
 
+
 public extension Reactive where Base: CKRecordZone {
-    
+
     public static func fetch(with recordZoneID: CKRecordZoneID, in database: CKDatabase) -> Single<CKRecordZone> {
         return Single<CKRecordZone>.create { single in
             database.fetch(withRecordZoneID: recordZoneID) { (zone, error) in
@@ -43,5 +44,12 @@ public extension Reactive where Base: CKRecordZone {
             return Disposables.create()
         }
     }
-    
+
+    public static func fetchChanges(previousServerChangeToken: CKServerChangeToken?, limit: Int = 99, in database: CKDatabase) -> Observable<ZoneEvent> {
+        return Observable.create { observer in
+            _ = ZoneFetcher(observer: observer, database: database, previousServerChangeToken: previousServerChangeToken, limit: limit)
+            return Disposables.create()
+        }
+    }
+
 }

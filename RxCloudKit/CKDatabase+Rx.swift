@@ -20,6 +20,10 @@ public extension Reactive where Base: CKDatabase {
     public func modify(recordZonesToSave: [CKRecordZone]?, recordZoneIDsToDelete: [CKRecordZoneID]?) -> Single<([CKRecordZone]?, [CKRecordZoneID]?)> {
         return CKRecordZone.rx.modify(recordZonesToSave: recordZonesToSave, recordZoneIDsToDelete: recordZoneIDsToDelete, in: self.base)
     }
+    
+    public func fetchChanges(previousServerChangeToken: CKServerChangeToken?, limit: Int = 99) -> Observable<ZoneEvent> {
+        return CKRecordZone.rx.fetchChanges(previousServerChangeToken: previousServerChangeToken, limit: limit, in: self.base)
+    }
 
     // MARK:- records
 

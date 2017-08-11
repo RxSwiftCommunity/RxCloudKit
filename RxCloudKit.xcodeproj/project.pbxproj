@@ -21,6 +21,7 @@
 		BA4F7E231F3C21370044F60E /* CKRecordZone+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E221F3C21370044F60E /* CKRecordZone+Rx.swift */; };
 		BA4F7E291F3CC7000044F60E /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E281F3CC7000044F60E /* Cache.swift */; };
 		BA4F7E2B1F3CC8520044F60E /* Cloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2A1F3CC8520044F60E /* Cloud.swift */; };
+		BA4F7E2D1F3D6F210044F60E /* ZoneFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2C1F3D6F210044F60E /* ZoneFetcher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		BA4F7E221F3C21370044F60E /* CKRecordZone+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKRecordZone+Rx.swift"; sourceTree = "<group>"; };
 		BA4F7E281F3CC7000044F60E /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		BA4F7E2A1F3CC8520044F60E /* Cloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cloud.swift; sourceTree = "<group>"; };
+		BA4F7E2C1F3D6F210044F60E /* ZoneFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneFetcher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				948486DA1EFC4153009FBD3A /* Errors.swift */,
 				948486DC1EFC415F009FBD3A /* Entities.swift */,
 				948486DE1EFC6047009FBD3A /* RecordFetcher.swift */,
+				BA4F7E2C1F3D6F210044F60E /* ZoneFetcher.swift */,
 				944AB42E1EFC29DE003852DF /* CKDatabase+Rx.swift */,
 				948630921F00459600752EEB /* CKRecord+Rx.swift */,
 				BA4F7E221F3C21370044F60E /* CKRecordZone+Rx.swift */,
@@ -268,6 +271,7 @@
 				948630951F0045A300752EEB /* CKSubscription+Rx.swift in Sources */,
 				948486DF1EFC6047009FBD3A /* RecordFetcher.swift in Sources */,
 				BA4F7E231F3C21370044F60E /* CKRecordZone+Rx.swift in Sources */,
+				BA4F7E2D1F3D6F210044F60E /* ZoneFetcher.swift in Sources */,
 				948486DB1EFC4153009FBD3A /* Errors.swift in Sources */,
 				944AB42F1EFC29DE003852DF /* CKDatabase+Rx.swift in Sources */,
 			);

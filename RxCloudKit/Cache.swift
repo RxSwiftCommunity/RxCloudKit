@@ -10,18 +10,21 @@ import RxSwift
 import CloudKit
 
 public class Cache {
-
+    
     private let disposeBag = DisposeBag()
-
+    
+    static let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String
+    static let privateSubscriptionID = "\(appName).privateDatabaseSubscriptionID"
+    static let sharedSubscriptionID = "\(appName).sharedDatabaseSubscriptionID"
+    static let privateTokenKey = "\(appName).privateDatabaseTokenKey"
+    static let sharedTokenKey = "\(appName).sharedDatabaseTokenKey"
+    
+    public let defaults = UserDefaults.standard
     public let cloud = Cloud()
     public let zoneIDs: [String]
-    public let privateSubscriptionID: String
-    public let sharedSubscriptionID: String
-
-    public init(zoneIDs: [String], privateSubscriptionID: String, sharedSubscriptionID: String) {
+    
+    public init(zoneIDs: [String]) {
         self.zoneIDs = zoneIDs
-        self.privateSubscriptionID = privateSubscriptionID
-        self.sharedSubscriptionID = sharedSubscriptionID
     }
 
     public func applicationDidFinishLaunching() {
@@ -52,7 +55,7 @@ public class Cache {
 
         }
 
-        let subscription = CKDatabaseSubscription.init(subscriptionID: privateSubscriptionID)
+        let subscription = CKDatabaseSubscription.init(subscriptionID: Cache.privateSubscriptionID)
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true
         subscription.notificationInfo = notificationInfo
@@ -88,6 +91,18 @@ public class Cache {
 //        viewController!.fetchChanges(in: notification.databaseScope) {
 //            completionHandler(.newData)
 //        }
+    }
+    
+    public func fetchDatabaseChanges() {
+        let token = defaults.object(forKey: Cache.privateTokenKey) as? CKServerChangeToken
+        
+
+    }
+
+    public func fetchZoneChanges() {
+        let token = defaults.object(forKey: Cache.privateTokenKey) as? CKServerChangeToken
+        
+        
     }
 
 
