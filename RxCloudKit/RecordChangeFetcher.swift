@@ -54,16 +54,18 @@ final class RecordChangeFetcher {
     }
     
     private func recordZoneFetchCompletionBlock(zoneID: CKRecordZoneID, serverChangeToken: CKServerChangeToken?, clientChangeTokenData: Data?, moreComing: Bool, recordZoneError: Error?) {
+        // TODO clientChangeTokenData ?
+        if let error = recordZoneError {
+            //            observer.on(.error(error)) // special handling for CKErrorChangeTokenExpired (purge local cache, fetch with token=nil)
+            return
+        }
+
         self.updateToken(zoneID: zoneID, serverChangeToken: serverChangeToken)
 
         if let token = serverChangeToken {
             self.observer.on(.next(.token(zoneID, token)))
         }
-        // TODO clientChangeTokenData ?
-        if let error = recordZoneError {
-            observer.on(.error(error)) // special handling for CKErrorChangeTokenExpired (purge local cache, fetch with token=nil)
-            return
-        }
+        
 //        if moreComing {
 //            self.fetch() // TODO only for this zone?
 //            return

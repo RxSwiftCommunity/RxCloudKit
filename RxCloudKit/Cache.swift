@@ -94,10 +94,10 @@ public final class Cache {
     public func applicationDidReceiveRemoteNotification(userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let dict = userInfo as! [String: NSObject]
         guard let notification: CKDatabaseNotification = CKNotification(fromRemoteNotificationDictionary: dict) as? CKDatabaseNotification else { return }
-        self.fetchDatabaseChanges()
+        self.fetchDatabaseChanges(fetchCompletionHandler: completionHandler)
     }
 
-    public func fetchDatabaseChanges() {
+    public func fetchDatabaseChanges(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let token = defaults.object(forKey: Cache.privateTokenKey) as? CKServerChangeToken
         cloud.privateDB.rx.fetchChanges(previousServerChangeToken: token).subscribe { event in
             switch event {
@@ -114,18 +114,23 @@ public final class Cache {
                 case .token(let token):
                     print("token: \(token)")
                     self.defaults.set(token, forKey: Cache.privateTokenKey)
-                    self.processAndPurgeCachedZones()
+                    self.processAndPurgeCachedZones(fetchCompletionHandler: completionHandler)
                 }
                 
             case .error(let error):
                 print("Error: ", error)
+                completionHandler(.failed)
             case .completed:
-                break
+                
+                if self.cachedZoneIDs.count == 0 {
+                    completionHandler(.noData)
+                }
+                
             }
         }.disposed(by: disposeBag)
     }
 
-    public func fetchZoneChanges(recordZoneIDs: [CKRecordZoneID]) {
+    public func fetchZoneChanges(recordZoneIDs: [CKRecordZoneID], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         var optionsByRecordZoneID: [CKRecordZoneID: CKFetchRecordZoneChangesOptions] = [:]
 
         if let tokenMap = defaults.object(forKey: Cache.zoneTokenMapKey) as? ZoneTokenMap {
@@ -168,8 +173,9 @@ public final class Cache {
                 
             case .error(let error):
                 print("Error: ", error)
+                completionHandler(.failed)
             case .completed:
-                break
+                completionHandler(.newData)
             }
         }.disposed(by: disposeBag)
     }
@@ -178,10 +184,10 @@ public final class Cache {
         self.cachedZoneIDs.append(zoneID)
     }
     
-    public func processAndPurgeCachedZones() {
+    public func processAndPurgeCachedZones(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let recordZoneIDs = self.cachedZoneIDs
         self.cachedZoneIDs = []
-        self.fetchZoneChanges(recordZoneIDs: recordZoneIDs)
+        self.fetchZoneChanges(recordZoneIDs: recordZoneIDs, fetchCompletionHandler: completionHandler)
     }
 
 }
