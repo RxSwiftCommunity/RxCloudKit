@@ -38,11 +38,13 @@ public class Zone {
 public protocol RxCKRecord {
 
     static var type: String { get }
-
+    
     static func create() -> CKRecord
 
     static func create(name: String) -> CKRecord
 
+    var metadata: Data? { get set }
+    
     func update(record: CKRecord) throws
     
     mutating func parse(record: CKRecord) // must be implemented by struct
@@ -65,6 +67,26 @@ public extension RxCKRecord {
     
     public static func create(zoneID: CKRecordZoneID) -> CKRecord {
         let record = CKRecord(recordType: Self.type, zoneID: zoneID) // TODO static var?
+        return record
+    }
+    
+    public mutating func storeMetadata(record: CKRecord) {
+        let data = NSMutableData()
+        let coder = NSKeyedArchiver.init(forWritingWith: data)
+        coder.requiresSecureCoding = true
+        record.encodeSystemFields(with: coder)
+        coder.finishEncoding()
+        self.metadata = data as Data
+    }
+    
+    public func fromMetadata() -> CKRecord? {
+        guard self.metadata != nil else {
+            return nil
+        }
+        let coder = NSKeyedUnarchiver(forReadingWith: self.metadata!)
+        coder.requiresSecureCoding = true
+        let record = CKRecord(coder: coder)
+        coder.finishDecoding()
         return record
     }
     

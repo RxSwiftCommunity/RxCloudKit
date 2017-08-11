@@ -22,7 +22,7 @@ final class RecordChangeFetcher {
     private let observer: Observer
     private let database: CKDatabase
     
-    private var recordZoneIDs: [CKRecordZoneID]
+    private let recordZoneIDs: [CKRecordZoneID]
     private var optionsByRecordZoneID: [CKRecordZoneID : CKFetchRecordZoneChangesOptions]
     
     init(observer: Observer, database: CKDatabase, recordZoneIDs: [CKRecordZoneID], optionsByRecordZoneID: [CKRecordZoneID : CKFetchRecordZoneChangesOptions]? = nil) {
@@ -40,32 +40,38 @@ final class RecordChangeFetcher {
     }
     
     private func recordWithIDWasDeletedBlock(recordID: CKRecordID, undocumented: String) {
-        print("\(recordID)|\(undocumented)") // TEMP
+        print("\(recordID)|\(undocumented)") // TEMP undocumented?
         self.observer.on(.next(.deleted(recordID)))
     }
     
     private func recordZoneChangeTokensUpdatedBlock(zoneID: CKRecordZoneID, serverChangeToken: CKServerChangeToken?, clientChangeTokenData: Data?) {
-// TODO        self.serverChangeToken = serverChangeToken
+        self.updateToken(zoneID: zoneID, serverChangeToken: serverChangeToken)
+        
         if let token = serverChangeToken {
             self.observer.on(.next(.token(zoneID, token)))
         }
-// TODO clientChangeTokenData
+        // TODO clientChangeTokenData?
     }
     
     private func recordZoneFetchCompletionBlock(zoneID: CKRecordZoneID, serverChangeToken: CKServerChangeToken?, clientChangeTokenData: Data?, moreComing: Bool, recordZoneError: Error?) {
-// TODO        self.serverChangeToken = serverChangeToken
+        self.updateToken(zoneID: zoneID, serverChangeToken: serverChangeToken)
+
         if let token = serverChangeToken {
             self.observer.on(.next(.token(zoneID, token)))
         }
-// TODO clientChangeTokenData
+        // TODO clientChangeTokenData ?
         if let error = recordZoneError {
             observer.on(.error(error)) // special handling for CKErrorChangeTokenExpired (purge local cache, fetch with token=nil)
             return
         }
-        if moreComing {
-            self.fetch() // TODO only for this zone!
-            return
-        }
+//        if moreComing {
+//            self.fetch() // TODO only for this zone?
+//            return
+//        } else {
+//            if let index = self.recordZoneIDs.index(of: zoneID) {
+//                self.recordZoneIDs.remove(at: index)
+//            }
+//        }
     }
     
     private func fetchRecordZoneChangesCompletionBlock(operationError: Error?) {
@@ -77,6 +83,13 @@ final class RecordChangeFetcher {
     }
     
     // MARK:- custom
+    
+    private func updateToken(zoneID: CKRecordZoneID, serverChangeToken: CKServerChangeToken?) {
+        // token, limit, fields (nil = all, [] = no user fields)
+        let options = self.optionsByRecordZoneID[zoneID] ?? CKFetchRecordZoneChangesOptions()
+        options.previousServerChangeToken = serverChangeToken
+        self.optionsByRecordZoneID[zoneID] = options
+    }
     
     private func fetch() {
         let operation = CKFetchRecordZoneChangesOperation(recordZoneIDs: self.recordZoneIDs, optionsByRecordZoneID: self.optionsByRecordZoneID)

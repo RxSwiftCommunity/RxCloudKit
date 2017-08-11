@@ -9,21 +9,33 @@
 import RxSwift
 import CloudKit
 
-public class Cache {
-    
-    private let disposeBag = DisposeBag()
-    
+typealias ZoneTokenMap = [CKRecordZoneID: CKServerChangeToken]
+
+public protocol CacheDelegate {
+    func cache(record: CKRecord)
+    func deleteCache(for recordID: CKRecordID)
+    func deleteCache(in zoneID: CKRecordZoneID)
+}
+
+public final class Cache {
+
     static let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String
     static let privateSubscriptionID = "\(appName).privateDatabaseSubscriptionID"
     static let sharedSubscriptionID = "\(appName).sharedDatabaseSubscriptionID"
     static let privateTokenKey = "\(appName).privateDatabaseTokenKey"
     static let sharedTokenKey = "\(appName).sharedDatabaseTokenKey"
-    
+    static let zoneTokenMapKey = "\(appName).zoneTokenMapKey"
+
     public let defaults = UserDefaults.standard
     public let cloud = Cloud()
     public let zoneIDs: [String]
-    
-    public init(zoneIDs: [String]) {
+
+    private let delegate: CacheDelegate
+    private let disposeBag = DisposeBag()
+    private var cachedZoneIDs: [CKRecordZoneID] = []
+
+    public init(delegate: CacheDelegate, zoneIDs: [String]) {
+        self.delegate = delegate
         self.zoneIDs = zoneIDs
     }
 
@@ -74,12 +86,7 @@ public class Cache {
         //let createZoneGroup = DispatchGroup()
         //createZoneGroup.enter()
         //self.createZoneGroup.leave()
-        // Fetch any changes from the server that happened while the app wasn't running
 //        createZoneGroup.notify(queue: DispatchQueue.global()) {
-//            if self.createdCustomZone {
-//                self.fetchChanges(in: .private) { }
-//                //                self.fetchChanges(in: .shared) { }
-//            }
 //        }
 
     }
@@ -87,23 +94,94 @@ public class Cache {
     public func applicationDidReceiveRemoteNotification(userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let dict = userInfo as! [String: NSObject]
         guard let notification: CKDatabaseNotification = CKNotification(fromRemoteNotificationDictionary: dict) as? CKDatabaseNotification else { return }
-
-//        viewController!.fetchChanges(in: notification.databaseScope) {
-//            completionHandler(.newData)
-//        }
+        self.fetchDatabaseChanges()
     }
-    
+
     public func fetchDatabaseChanges() {
         let token = defaults.object(forKey: Cache.privateTokenKey) as? CKServerChangeToken
-        
-
+        cloud.privateDB.rx.fetchChanges(previousServerChangeToken: token).subscribe { event in
+            switch event {
+            case .next(let zoneEvent):
+                print("\(zoneEvent)")
+                
+                switch zoneEvent {
+                case .changed(let zoneID):
+                    print("changed: \(zoneID)")
+                    self.cacheChanged(zoneID: zoneID)
+                case .deleted(let zoneID):
+                    print("deleted: \(zoneID)")
+                    self.delegate.deleteCache(in: zoneID)
+                case .token(let token):
+                    print("token: \(token)")
+                    self.defaults.set(token, forKey: Cache.privateTokenKey)
+                    self.processAndPurgeCachedZones()
+                }
+                
+            case .error(let error):
+                print("Error: ", error)
+            case .completed:
+                break
+            }
+        }.disposed(by: disposeBag)
     }
 
-    public func fetchZoneChanges() {
-        let token = defaults.object(forKey: Cache.privateTokenKey) as? CKServerChangeToken
-        
-        
-    }
+    public func fetchZoneChanges(recordZoneIDs: [CKRecordZoneID]) {
+        var optionsByRecordZoneID: [CKRecordZoneID: CKFetchRecordZoneChangesOptions] = [:]
 
+        if let tokenMap = defaults.object(forKey: Cache.zoneTokenMapKey) as? ZoneTokenMap {
+            
+            for recordZoneID in recordZoneIDs {
+                
+                if let token = tokenMap[recordZoneID] {
+                    let options = CKFetchRecordZoneChangesOptions()
+                    options.previousServerChangeToken = token
+                    optionsByRecordZoneID[recordZoneID] = options
+                }
+                
+            }
+            
+        } else {
+            defaults.set(ZoneTokenMap(), forKey: Cache.zoneTokenMapKey)
+        }
+
+        cloud.privateDB.rx.fetchChanges(recordZoneIDs: recordZoneIDs, optionsByRecordZoneID: optionsByRecordZoneID).subscribe { event in
+            switch event {
+            case .next(let recordEvent):
+                print("\(recordEvent)")
+                
+                switch recordEvent {
+                case .changed(let record):
+                    print("changed: \(record)")
+                    self.delegate.cache(record: record)
+                case .deleted(let recordID):
+                    print("deleted: \(recordID)")
+                    self.delegate.deleteCache(for: recordID)
+                case .token(let (zoneID, token)):
+                    print("token: \(zoneID)->\(token)")
+                    
+                    if var tokenMap = self.defaults.object(forKey: Cache.zoneTokenMapKey) as? ZoneTokenMap {
+                        tokenMap[zoneID] = token
+                        self.defaults.set(tokenMap, forKey: Cache.zoneTokenMapKey)
+                    }
+                    
+                }
+                
+            case .error(let error):
+                print("Error: ", error)
+            case .completed:
+                break
+            }
+        }.disposed(by: disposeBag)
+    }
+    
+    public func cacheChanged(zoneID: CKRecordZoneID) {
+        self.cachedZoneIDs.append(zoneID)
+    }
+    
+    public func processAndPurgeCachedZones() {
+        let recordZoneIDs = self.cachedZoneIDs
+        self.cachedZoneIDs = []
+        self.fetchZoneChanges(recordZoneIDs: recordZoneIDs)
+    }
 
 }
