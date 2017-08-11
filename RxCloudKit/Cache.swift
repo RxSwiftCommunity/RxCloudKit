@@ -9,7 +9,7 @@
 import RxSwift
 import CloudKit
 
-typealias ZoneTokenMap = [CKRecordZoneID: CKServerChangeToken]
+typealias ZoneTokenMap = [Data: Data]
 
 public protocol CacheDelegate {
     func cache(record: CKRecord)
@@ -137,9 +137,9 @@ public final class Cache {
             
             for recordZoneID in recordZoneIDs {
                 
-                if let token = tokenMap[recordZoneID] {
+                if let token = tokenMap[self.key(zoneID: recordZoneID)] {
                     let options = CKFetchRecordZoneChangesOptions()
-                    options.previousServerChangeToken = token
+                    options.previousServerChangeToken = self.value(token: token)
                     optionsByRecordZoneID[recordZoneID] = options
                 }
                 
@@ -163,12 +163,7 @@ public final class Cache {
                     self.delegate.deleteCache(for: recordID)
                 case .token(let (zoneID, token)):
                     print("token: \(zoneID)->\(token)")
-                    
-                    if var tokenMap = self.defaults.object(forKey: Cache.zoneTokenMapKey) as? ZoneTokenMap {
-                        tokenMap[zoneID] = token
-                        self.defaults.set(tokenMap, forKey: Cache.zoneTokenMapKey)
-                    }
-                    
+                    self.save(zoneID: zoneID, token: token, for: Cache.zoneTokenMapKey)
                 }
                 
             case .error(let error):
@@ -194,15 +189,37 @@ public final class Cache {
     // MARK:- token
     
     private func save(token: CKServerChangeToken, for key: String) {
-        self.defaults.set(NSKeyedArchiver.archivedData(withRootObject: token), forKey: key)
+        self.defaults.set(self.value(token: token), forKey: key)
     }
     
     private func token(for key: String) -> CKServerChangeToken? {
         
         if let object = self.defaults.object(forKey: key) as? NSData {
-            return NSKeyedUnarchiver.unarchiveObject(with: object as Data) as? CKServerChangeToken
+            return self.value(token: object as Data)
         }
         
         return nil
     }
+    
+    private func save(zoneID: CKRecordZoneID, token: CKServerChangeToken, for key: String) {
+        let aZoneID = self.key(zoneID: zoneID) as Data
+        let aToken = self.value(token: token)
+        if var tokenMap = self.defaults.object(forKey: key) as? ZoneTokenMap {
+            tokenMap[aZoneID] = aToken
+            self.defaults.set(tokenMap, forKey: Cache.zoneTokenMapKey)
+        }
+    }
+    
+    private func key(zoneID: CKRecordZoneID) -> Data {
+        return NSKeyedArchiver.archivedData(withRootObject: zoneID)
+    }
+    
+    private func value(token: CKServerChangeToken) -> Data {
+        return NSKeyedArchiver.archivedData(withRootObject: token)
+    }
+    
+    private func value(token: Data) ->  CKServerChangeToken? {
+        return NSKeyedUnarchiver.unarchiveObject(with: token) as? CKServerChangeToken
+    }
+    
 }
