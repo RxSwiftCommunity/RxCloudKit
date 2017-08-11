@@ -15,7 +15,7 @@ public enum ZoneEvent {
     case token(CKServerChangeToken)
 }
 
-final class ZoneFetcher {
+final class ZoneChangeFetcher {
     
     typealias Observer = AnyObserver<ZoneEvent>
     

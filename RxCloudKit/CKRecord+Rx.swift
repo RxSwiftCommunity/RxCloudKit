@@ -70,5 +70,18 @@ public extension Reactive where Base: CKRecord {
             return Disposables.create()
         }
     }
+    
+    public static func fetchChanges(recordZoneIDs: [CKRecordZoneID], optionsByRecordZoneID: [CKRecordZoneID : CKFetchRecordZoneChangesOptions]? = nil, in database: CKDatabase) -> Observable<RecordEvent> {
+//        var optionsByRecordZoneID = [CKRecordZoneID: CKFetchRecordZoneChangesOptions]()
+//        for zoneID in recordZoneIDs {
+//            let options = CKFetchRecordZoneChangesOptions() // token, limit, fields (nil = all, [] = no user fields)
+//            options.previousServerChangeToken = ...
+//                optionsByRecordZoneID[zoneID] = options
+//        }
+        return Observable.create { observer in
+            _ = RecordChangeFetcher(observer: observer, database: database, recordZoneIDs: recordZoneIDs, optionsByRecordZoneID: optionsByRecordZoneID)
+            return Disposables.create()
+        }
+    }
 
 }
