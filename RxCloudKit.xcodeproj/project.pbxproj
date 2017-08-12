@@ -62,6 +62,10 @@
 		BA9E7A0A1F3E254700F450EA /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		BA9E7A0E1F3ECE8900F450EA /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		BA9E7A101F3ECE9000F450EA /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		BA9E7A121F3F011500F450EA /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
+		BA9E7A131F3F011500F450EA /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
+		BA9E7A141F3F011500F450EA /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		BA9E7A151F3F011500F450EA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +91,10 @@
 		944AB40A1EFC28C5003852DF = {
 			isa = PBXGroup;
 			children = (
+				BA9E7A121F3F011500F450EA /* Cartfile */,
+				BA9E7A131F3F011500F450EA /* Cartfile.resolved */,
+				BA9E7A141F3F011500F450EA /* LICENSE */,
+				BA9E7A151F3F011500F450EA /* README.md */,
 				944AB4161EFC28C6003852DF /* RxCloudKit */,
 				944AB4211EFC28C7003852DF /* RxCloudKitTests */,
 				944AB4151EFC28C6003852DF /* Products */,
