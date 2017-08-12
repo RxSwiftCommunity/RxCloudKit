@@ -26,13 +26,16 @@ public protocol RxCKRecord {
     /* copies user fields via reflection */
     func writeUserFields(to record: CKRecord) throws
     
-    func read(from record: CKRecord)
+    /* read system and user fields form CKRecord */
+    mutating func read(from record: CKRecord)
     
+    /* generate CKRecord with user- and possibly system fields filled */
     func asCKRecord() -> CKRecord
     
+    /* create empty CKRecord for zone and type */
     static func newCKRecord() -> CKRecord
     
-    static func create(name: String) -> CKRecord
+//    static func create(name: String) -> CKRecord
     
 }
 
