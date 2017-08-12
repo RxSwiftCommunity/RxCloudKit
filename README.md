@@ -74,6 +74,12 @@ extension AppDelegate: CacheDelegate {
 }
 ```
 
+Carthage setup.
+
+```
+github "maxvol/RxCloudKit" ~> 0.0.19
+
+```
 
 
 
