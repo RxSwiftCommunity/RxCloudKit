@@ -31,7 +31,7 @@ public final class Cache {
     private let delegate: CacheDelegate
     private let disposeBag = DisposeBag()
     private var cachedZoneIDs: [CKRecordZoneID] = []
-    private var missingZoneIDs: [CKRecordZoneID] = []
+//    private var missingZoneIDs: [CKRecordZoneID] = []
 
     public init(delegate: CacheDelegate, zoneIDs: [String]) {
         self.delegate = delegate
@@ -40,38 +40,21 @@ public final class Cache {
 
     public func applicationDidFinishLaunching() {
 
-        // TODO fetch zones, for missing zones create zones
-
-        for zoneID in zoneIDs.map({ Zone.id(name: $0) }) {
-
-            cloud.privateDB.rx.fetch(with: zoneID).subscribe { event in
-                switch event {
-                case .success(let zone):
-                    print("\(zone)")
-                case .error(let error):
-                    print("Error: ", error)
-                    self.missingZoneIDs.append(zoneID) // TODO
-                }
-            }.disposed(by: disposeBag)
-
-            let zone = Zone.create(zoneID: zoneID)
-
-            cloud.privateDB.rx.modify(recordZonesToSave: [zone], recordZoneIDsToDelete: nil).subscribe { event in
-                switch event {
-                case .success(let (saved, deleted)):
-                    print("\(saved)")
-                case .error(let error):
-                    print("Error: ", error)
-                }
-            }.disposed(by: disposeBag)
-
-        }
+        let zones = zoneIDs.map({ Zone.create(name: $0) })
+        cloud.privateDB.rx.modify(recordZonesToSave: zones, recordZoneIDsToDelete: nil).subscribe { event in
+            switch event {
+            case .success(let (saved, deleted)):
+                print("\(saved)")
+            case .error(let error):
+                print("Error: ", error)
+            }
+        }.disposed(by: disposeBag)
 
         let subscription = CKDatabaseSubscription.init(subscriptionID: Cache.privateSubscriptionID)
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true
         subscription.notificationInfo = notificationInfo
-
+        
         cloud.privateDB.rx.modify(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil).subscribe { event in
             switch event {
             case .success(let (saved, deleted)):
