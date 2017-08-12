@@ -30,7 +30,7 @@ public protocol RxCKRecord {
     mutating func read(from record: CKRecord)
     
     /* generate CKRecord with user- and possibly system fields filled */
-    func asCKRecord() -> CKRecord
+    func asCKRecord() throws -> CKRecord
     
     /* create empty CKRecord for zone and type */
     static func newCKRecord() -> CKRecord

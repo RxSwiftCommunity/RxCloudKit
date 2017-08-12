@@ -3,7 +3,6 @@
 Basic usage.
 
 ```swift
-
 privateDB.rx.save(record: ckRecord).subscribe { event in
     switch event {
         case .success(let record):
@@ -11,7 +10,7 @@ privateDB.rx.save(record: ckRecord).subscribe { event in
         case .error(let error):
             print("Error: ", error)
     }
-}.disposed(by: Global.disposeBag)
+}.disposed(by: disposeBag)
 ```
 
 "RxCKRecord" class provides syntactic sugar for copying data  (including CloudKit metadata) between CKRecord objects and plain structs. 
@@ -28,6 +27,14 @@ extension MyRecord: RxCKRecord {
         // TODO 
     }
 }
+
+let myRecord = MyRecord(myField: "")
+let ckRecord = try! myRecord.asCKRecord()
+
+//
+
+myRecord.read(from: ckRecord)
+
 ```
 
 "Cache" class is an out of the box solution for maintaining a local cache of CloudKit records. Tokens are stored in UserDefaults.
