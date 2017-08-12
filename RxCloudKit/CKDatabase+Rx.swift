@@ -46,6 +46,10 @@ public extension Reactive where Base: CKDatabase {
     public func fetchChanges(recordZoneIDs: [CKRecordZoneID], optionsByRecordZoneID: [CKRecordZoneID : CKFetchRecordZoneChangesOptions]? = nil) -> Observable<RecordEvent> {
         return CKRecord.rx.fetchChanges(recordZoneIDs: recordZoneIDs, optionsByRecordZoneID: optionsByRecordZoneID, in: self.base)
     }
+    
+    public func modify(recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?) -> Observable<Any> {
+        return CKRecord.rx.modify(recordsToSave: records, recordIDsToDelete: recordIDs, in: self.base)
+    }
 
     // MARK:- subscriptions
 
