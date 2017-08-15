@@ -9,9 +9,14 @@
 import RxSwift
 import CloudKit
 
+public enum RecordModifyEvent {
+    case changed([CKRecord])
+    case deleted([CKRecordID])
+}
+
 final class RecordModifier {
     
-    typealias Observer = AnyObserver<Any>
+    typealias Observer = AnyObserver<RecordModifyEvent>
     
     private let observer: Observer
     private let database: CKDatabase
@@ -40,6 +45,12 @@ final class RecordModifier {
         if let error = error {
             observer.on(.error(error))
             return
+        }
+        if let records = records {
+            observer.on(.next(.changed(records)))
+        }
+        if let recordIDs = recordIDs {
+            observer.on(.next(.deleted(recordIDs)))
         }
         observer.on(.completed)
     }

@@ -78,7 +78,7 @@ public extension Reactive where Base: CKRecord {
         }
     }
     
-    public static func modify(recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?, in database: CKDatabase) -> Observable<Any> {
+    public static func modify(recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?, in database: CKDatabase) -> Observable<RecordModifyEvent> {
         return Observable.create { observer in
             _ = RecordModifier(observer: observer, database: database, recordsToSave: records, recordIDsToDelete: recordIDs)
             return Disposables.create()
