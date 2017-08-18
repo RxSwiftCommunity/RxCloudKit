@@ -39,18 +39,18 @@ public protocol RxCKRecord {
     
 }
 
-//var AssociatedObjectHandle: UInt8 = 0
+var AssociatedObjectHandle: UInt8 = 0
 
 public extension RxCKRecord {
     
-//    public var metadata: Data? {
-//        get {
-//            return objc_getAssociatedObject(self, &AssociatedObjectHandle) as? Data
-//        }
-//        set {
-//            objc_setAssociatedObject(self, &AssociatedObjectHandle, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-//        }
-//    }
+    public var metadata: Data? {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedObjectHandle) as? Data
+        }
+        set {
+            objc_setAssociatedObject(self, &AssociatedObjectHandle, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
 
     public mutating func read(from record: CKRecord) {
         self.readMetadata(from: record)
@@ -101,6 +101,9 @@ public extension RxCKRecord {
                 throw SerializationError.structRequired
             }
             for case let (label?, anyValue) in mirror.children {
+                if label == "metadata" {
+                    continue
+                }
                 if let value = anyValue as? CKRecordValue {
                     record.setValue(value, forKey: label)
                 } else {
