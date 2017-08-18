@@ -35,7 +35,8 @@ public protocol RxCKRecord {
     /* create empty CKRecord for zone and type */
     static func newCKRecord() -> CKRecord
     
-//    static func create(name: String) -> CKRecord
+    /* create empty CKRecord with name for type */
+    static func create(name: String) -> CKRecord
     
 }
 
@@ -68,11 +69,11 @@ public extension RxCKRecord {
         return record
     }
 
-//    public static func create(name: String) -> CKRecord {
-//        let id = CKRecordID(recordName: name)
-//        let record = CKRecord(recordType: Self.type, recordID: id)
-//        return record
-//    }
+    public static func create(name: String) -> CKRecord {
+        let id = CKRecordID(recordName: name)
+        let record = CKRecord(recordType: Self.type, recordID: id)
+        return record
+    }
 
     public mutating func readMetadata(from record: CKRecord) {
         let data = NSMutableData()
