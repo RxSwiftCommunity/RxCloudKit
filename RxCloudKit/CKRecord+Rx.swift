@@ -45,7 +45,6 @@ public extension Reactive where Base: CKRecord {
         }
     }
 
-
     public static func delete(with recordID: CKRecordID, in database: CKDatabase) -> Single<CKRecordID> {
         return Single<CKRecordID>.create { single in
             database.delete(withRecordID: recordID) { (recordID, error) in
@@ -71,7 +70,19 @@ public extension Reactive where Base: CKRecord {
             return Disposables.create()
         }
     }
-
-
+    
+    public static func fetchChanges(recordZoneIDs: [CKRecordZoneID], optionsByRecordZoneID: [CKRecordZoneID : CKFetchRecordZoneChangesOptions]? = nil, in database: CKDatabase) -> Observable<RecordEvent> {
+        return Observable.create { observer in
+            _ = RecordChangeFetcher(observer: observer, database: database, recordZoneIDs: recordZoneIDs, optionsByRecordZoneID: optionsByRecordZoneID)
+            return Disposables.create()
+        }
+    }
+    
+    public static func modify(recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?, in database: CKDatabase) -> Observable<RecordModifyEvent> {
+        return Observable.create { observer in
+            _ = RecordModifier(observer: observer, database: database, recordsToSave: records, recordIDsToDelete: recordIDs)
+            return Disposables.create()
+        }
+    }
 
 }

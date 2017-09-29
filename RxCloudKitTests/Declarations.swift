@@ -50,8 +50,8 @@ enum MyRecordE {
 }
 
 extension MySerializer {
-    
-    func p(inout f: Any) {
+
+    func p(f: inout Any) {
         switch self {
         case .intField(let name, let value):
             print("\(self)=\(value)")
@@ -60,47 +60,47 @@ extension MySerializer {
 //            record["myIntField"] = self.myIntField as CKRecordValue
             break
         default:
-           break
+            break
         }
     }
-    
-    func setValue<T>(inout object:T, key: String) {
+
+    func setValue<T>(object: inout T, key: String) {
         switch key {
         case "String":
             object = ("A String" as? T)!
         case "UIColor":
-            object = (UIColor.whiteColor() as? T)!
+            object = (UIColor.white as? T)!
         case "Bool":
             object = (true as? T)!
         default:
-            println("Unhandled key: \(key)")
+            print("Unhandled key: \(key)")
         }
     }
 }
 
 public protocol RxCKSerializer {
-    
+
     static var type: String { get }
-    
+
 //    init()
-//    
+//
 //    init(name: String)
 
 }
 
 public extension RxCKSerializer {
-    
+
 //    init() {
 //        let record = CKRecord(recordType: Self.type)
 //        self.init(record: record)
 //    }
-    
+
 //    init(name: String) {
 //        let id = CKRecordID(recordName: name)
 //        let record = CKRecord(recordType: Self.type, recordID: id)
 //        self.init(record: record)
 //    }
-    
+
 }
 
 
@@ -111,25 +111,25 @@ public extension RxCKSerializer {
 //}
 
 struct MyRecord1: RxCKSerializer {
-    
+
     static var type: String = "MyRecord1"
 
 //        var myIntField: Int { get set }
 //        var myBoolField: Bool { get set }
 //        var myStringField: String { get set }
-//    
+//
 //    init(record: CKRecord) {
 //        self.myIntField = record["myIntField"] as? Int ?? 0
 //        self.myBoolField = record["myBoolField"] as? Bool ?? false
 //        self.myStringField = record["myStringField"] as? String ?? ""
 //    }
-//    
+//
 //    func update(_ record: CKRecord) {
 //        record["myIntField"] = self.myIntField as CKRecordValue
 //        record["myBoolField"] = self.myBoolField as CKRecordValue
 //        record["myStringField"] = self.myStringField as CKRecordValue
 //    }
 
-    
+
 }
 
