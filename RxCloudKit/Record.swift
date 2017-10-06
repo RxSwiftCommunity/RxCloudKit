@@ -105,11 +105,8 @@ public extension RxCKRecord {
                 if label == "metadata" {
                     continue
                 }
-                if let value = anyValue as? CKRecordValue {
-                    record.setValue(value, forKey: label)
-                } else {
-                    throw SerializationError.unsupportedSubType(label: label)
-                }
+                let value = anyValue as? CKRecordValue
+                record.setValue(value, forKey: label)
             }
         }
     }
