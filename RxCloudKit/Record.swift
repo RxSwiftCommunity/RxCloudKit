@@ -38,7 +38,7 @@ public protocol RxCKRecord {
     /* create empty CKRecord with name for type */
     static func create(name: String) -> CKRecord
     
-    /* predicate to uniquely identify the record, such as: NSPredicate(format: "code == '\(item.code)'") */
+    /* predicate to uniquely identify the record, such as: NSPredicate(format: "code == '\(code)'") */
     func predicate() -> NSPredicate
 
 }
