@@ -19,31 +19,34 @@ public protocol RxCKRecord {
 
     /* system fields */
     var metadata: Data? { get set }
-    
+
     /* reads user fields */
     mutating func readUserFields(from record: CKRecord) // must be implemented by struct
 
     /* copies user fields via reflection */
     func writeUserFields(to record: CKRecord) throws
-    
+
     /* read system and user fields form CKRecord */
     mutating func read(from record: CKRecord)
-    
+
     /* generate CKRecord with user- and possibly system fields filled */
     func asCKRecord() throws -> CKRecord
-    
+
     /* create empty CKRecord for zone and type */
     static func newCKRecord() -> CKRecord
-    
+
     /* create empty CKRecord with name for type */
     static func create(name: String) -> CKRecord
     
+    /* predicate to uniquely identify the record, such as: NSPredicate(format: "code == '\(item.code)'") */
+    func predicate() -> NSPredicate
+
 }
 
 //var AssociatedObjectHandle: UInt8 = 0
 
 public extension RxCKRecord {
-    
+
 //    public var metadata: Data? {
 //        get {
 //            return objc_getAssociatedObject(self, &AssociatedObjectHandle) as? Data
@@ -63,7 +66,7 @@ public extension RxCKRecord {
         try self.writeUserFields(to: record)
         return record
     }
-    
+
     public static func newCKRecord() -> CKRecord {
         let record = CKRecord(recordType: Self.type, zoneID: CKRecordZone(zoneName: Self.zone).zoneID)
         return record
@@ -105,8 +108,13 @@ public extension RxCKRecord {
                 if label == "metadata" {
                     continue
                 }
-                let value = anyValue as? CKRecordValue
-                record.setValue(value, forKey: label)
+                if let value = anyValue as? CKRecordValue {
+                    record.setValue(value, forKey: label)
+                } else {
+                    throw SerializationError.unsupportedSubType(label: label)
+                }
+//                let value = anyValue as? CKRecordValue
+//                record.setValue(value, forKey: label)
             }
         }
     }
