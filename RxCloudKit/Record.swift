@@ -11,37 +11,31 @@ import ObjectiveC
 
 public protocol RxCKRecord {
 
-    /* record type */
+    /** record type */
     static var type: String { get } // must be implemented by struct
 
-    /* zone name */
+    /** zone name */
     static var zone: String { get } // must be implemented by struct
 
-    /* system fields */
+    /** system fields */
     var metadata: Data? { get set }
 
-    /* reads user fields */
+    /** reads user fields */
     mutating func readUserFields(from record: CKRecord) // must be implemented by struct
 
-    /* copies user fields via reflection */
+    /** copies user fields via reflection */
     func writeUserFields(to record: CKRecord) throws
 
-    /* read system and user fields form CKRecord */
+    /** read system and user fields form CKRecord */
     mutating func read(from record: CKRecord)
 
-    /* generate CKRecord with user- and possibly system fields filled */
+    /** generate CKRecord with user- and possibly system fields filled */
     func asCKRecord() throws -> CKRecord
 
-    /* create empty CKRecord for zone and type */
-    static func newCKRecord() -> CKRecord
-
-    /* create empty CKRecord with name for type */
-    static func create(name: String) -> CKRecord
-
-    /* predicate to uniquely identify the record, such as: NSPredicate(format: "code == '\(code)'") */
+    /** predicate to uniquely identify the record, such as: NSPredicate(format: "code == '\(code)'") */
     func predicate() -> NSPredicate
     
-    /* custom recordName if desired (must be unique per DB) */
+    /** custom recordName if desired (must be unique per DB) */
     func recordName() -> String?
 
 }
@@ -72,6 +66,7 @@ public extension RxCKRecord {
         return record
     }
 
+    /** create empty CKRecord for zone and type (and name, if provided via .recordName() method) */
     public static func newCKRecord(name: String? = nil) -> CKRecord {
         if let recordName = name {
             let id = CKRecordID(recordName: recordName, zoneID: Self.zoneID)
@@ -89,6 +84,7 @@ public extension RxCKRecord {
         }
     }
 
+    /** create empty CKRecord with name for type */
     public static func create(name: String) -> CKRecord {
         let id = CKRecordID(recordName: name)
         let record = CKRecord(recordType: Self.type, recordID: id)
