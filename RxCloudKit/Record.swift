@@ -37,9 +37,12 @@ public protocol RxCKRecord {
 
     /* create empty CKRecord with name for type */
     static func create(name: String) -> CKRecord
-    
+
     /* predicate to uniquely identify the record, such as: NSPredicate(format: "code == '\(code)'") */
     func predicate() -> NSPredicate
+    
+    /* custom recordName if desired (must be unique per DB) */
+    func recordName() -> String?
 
 }
 
@@ -60,16 +63,28 @@ public extension RxCKRecord {
         self.readMetadata(from: record)
         self.readUserFields(from: record)
     }
+    
+    public func recordName() -> String? { return nil }
 
     public func asCKRecord() throws -> CKRecord {
-        let record = self.fromMetadata() ?? Self.newCKRecord()
+        let record = self.fromMetadata() ?? Self.newCKRecord(self.recordName())
         try self.writeUserFields(to: record)
         return record
     }
 
-    public static func newCKRecord() -> CKRecord {
-        let record = CKRecord(recordType: Self.type, zoneID: CKRecordZone(zoneName: Self.zone).zoneID)
-        return record
+    public static func newCKRecord(name: String? = nil) -> CKRecord {
+        if let recordName = name {
+            let id = CKRecordID(recordName: name, zoneID: Self.zoneID)
+            let record = CKRecord(recordType: Self.type, recordID: id)
+            return record
+        } else {
+            let record = CKRecord(recordType: Self.type, zoneID: Self.zoneID)
+            return record
+        }
+    }
+
+    public static var zoneID: CKRecordZoneID {
+        return CKRecordZone(zoneName: Self.zone).zoneID
     }
 
     public static func create(name: String) -> CKRecord {
