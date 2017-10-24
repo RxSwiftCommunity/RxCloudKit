@@ -67,14 +67,14 @@ public extension RxCKRecord {
     public func recordName() -> String? { return nil }
 
     public func asCKRecord() throws -> CKRecord {
-        let record = self.fromMetadata() ?? Self.newCKRecord(self.recordName())
+        let record = self.fromMetadata() ?? Self.newCKRecord(name: self.recordName())
         try self.writeUserFields(to: record)
         return record
     }
 
     public static func newCKRecord(name: String? = nil) -> CKRecord {
         if let recordName = name {
-            let id = CKRecordID(recordName: name, zoneID: Self.zoneID)
+            let id = CKRecordID(recordName: recordName, zoneID: Self.zoneID)
             let record = CKRecord(recordType: Self.type, recordID: id)
             return record
         } else {
@@ -84,7 +84,9 @@ public extension RxCKRecord {
     }
 
     public static var zoneID: CKRecordZoneID {
-        return CKRecordZone(zoneName: Self.zone).zoneID
+        get {
+            return CKRecordZone(zoneName: Self.zone).zoneID
+        }
     }
 
     public static func create(name: String) -> CKRecord {
