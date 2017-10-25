@@ -20,17 +20,38 @@ final class RecordModifier {
     
     typealias Observer = AnyObserver<RecordModifyEvent>
     
+    fileprivate var index = 0
+    fileprivate var chunk = 400
+    
     private let observer: Observer
     private let database: CKDatabase
+    private let records: [CKRecord]?
+    private let recordIDs: [CKRecordID]?
+    private let operation: CKModifyRecordsOperation
     
     init(observer: Observer, database: CKDatabase, recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?) {
         self.observer = observer
         self.database = database
-        let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: recordIDs)
-        operation.perRecordProgressBlock = self.perRecordProgressBlock
-        operation.perRecordCompletionBlock = self.perRecordCompletionBlock
-        operation.modifyRecordsCompletionBlock = self.modifyRecordsCompletionBlock
-        self.database.add(operation)
+        self.records = records
+        self.recordIDs = recordIDs
+        self.operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: recordIDs)
+        self.operation.perRecordProgressBlock = self.perRecordProgressBlock
+        self.operation.perRecordCompletionBlock = self.perRecordCompletionBlock
+        self.operation.modifyRecordsCompletionBlock = self.modifyRecordsCompletionBlock
+        self.database.add(self.operation)
+    }
+    
+    private var count: Int {
+        return max(self.records?.count ?? 0, self.recordIDs?.count ?? 0)
+    }
+    
+    private func until() -> Int {
+        return index + chunk
+    }
+    
+    private func tuple() -> ([CKRecord]?, [CKRecordID]?) {
+        let until = self.until()
+        return (self.records == nil ? nil : Array(self.records![index..<until]), self.recordIDs == nil ? nil : Array(self.recordIDs![index..<until]))
     }
     
     // MARK:- callbacks
@@ -45,6 +66,19 @@ final class RecordModifier {
     
     private func modifyRecordsCompletionBlock(records: [CKRecord]?, recordIDs: [CKRecordID]?, error: Error?) {
         if let error = error {
+            if let ckError = error as? CKError {
+                switch ckError.code {
+                case .limitExceeded:
+                    self.chunk = Int(self.chunk / 2)
+                    let tuple = self.tuple()
+                    self.operation.recordsToSave = tuple.0
+                    self.operation.recordIDsToDelete = tuple.1
+                    self.database.add(self.operation)
+                    return
+                default:
+                    break
+                }
+            }
             observer.on(.error(error))
             return
         }
@@ -54,7 +88,15 @@ final class RecordModifier {
         if let recordIDs = recordIDs {
             observer.on(.next(.deleted(recordIDs)))
         }
-        observer.on(.completed)
+        if self.until() < self.count {
+            self.index += self.chunk
+            let tuple = self.tuple()
+            self.operation.recordsToSave = tuple.0
+            self.operation.recordIDsToDelete = tuple.1
+            self.database.add(self.operation)
+        } else {
+            observer.on(.completed)
+        }
     }
     
 }
