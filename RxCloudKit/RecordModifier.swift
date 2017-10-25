@@ -27,18 +27,26 @@ final class RecordModifier {
     private let database: CKDatabase
     private let records: [CKRecord]?
     private let recordIDs: [CKRecordID]?
-    private let operation: CKModifyRecordsOperation
     
     init(observer: Observer, database: CKDatabase, recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?) {
         self.observer = observer
         self.database = database
         self.records = records
         self.recordIDs = recordIDs
-        self.operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: recordIDs)
-        self.operation.perRecordProgressBlock = self.perRecordProgressBlock
-        self.operation.perRecordCompletionBlock = self.perRecordCompletionBlock
-        self.operation.modifyRecordsCompletionBlock = self.modifyRecordsCompletionBlock
-        self.database.add(self.operation)
+        self.batch(recordsToSave: records, recordIDsToDelete: recordIDs)
+    }
+    
+    private func batch(recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?) {
+        let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: recordIDs)
+        operation.perRecordProgressBlock = self.perRecordProgressBlock
+        operation.perRecordCompletionBlock = self.perRecordCompletionBlock
+        operation.modifyRecordsCompletionBlock = self.modifyRecordsCompletionBlock
+        database.add(operation)
+    }
+    
+    private func batch() {
+        let tuple = self.tuple()
+        self.batch(recordsToSave: tuple.0, recordIDsToDelete: tuple.1)
     }
     
     private var count: Int {
@@ -70,10 +78,7 @@ final class RecordModifier {
                 switch ckError.code {
                 case .limitExceeded:
                     self.chunk = Int(self.chunk / 2)
-                    let tuple = self.tuple()
-                    self.operation.recordsToSave = tuple.0
-                    self.operation.recordIDsToDelete = tuple.1
-                    self.database.add(self.operation)
+                    self.batch()
                     return
                 default:
                     break
@@ -90,10 +95,7 @@ final class RecordModifier {
         }
         if self.until() < self.count {
             self.index += self.chunk
-            let tuple = self.tuple()
-            self.operation.recordsToSave = tuple.0
-            self.operation.recordIDsToDelete = tuple.1
-            self.database.add(self.operation)
+            self.batch()
         } else {
             observer.on(.completed)
         }
