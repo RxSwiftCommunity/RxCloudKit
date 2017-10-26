@@ -11,52 +11,52 @@ import CloudKit
 
 public extension Reactive where Base: CKRecord {
     
-    public func save(in database: CKDatabase) -> Single<CKRecord> {
-        return Single<CKRecord>.create { single in
+    public func save(in database: CKDatabase) -> Maybe<CKRecord> {
+        return Maybe<CKRecord>.create { maybe in
             database.save(self.base) { (result, error) in
                 if let error = error {
-                    single(.error(error))
+                    maybe(.error(error))
                     return
                 }
                 guard result != nil else {
-                    single(.error(RxCKError.save))
+                    maybe(.completed)
                     return
                 }
-                single(.success(result!))
+                maybe(.success(result!))
             }
             return Disposables.create()
         }
     }
 
-    public static func fetch(with recordID: CKRecordID, in database: CKDatabase) -> Single<CKRecord> {
-        return Single<CKRecord>.create { single in
+    public static func fetch(with recordID: CKRecordID, in database: CKDatabase) -> Maybe<CKRecord> {
+        return Maybe<CKRecord>.create { maybe in
             database.fetch(withRecordID: recordID) { (record, error) in
                 if let error = error {
-                    single(.error(error))
+                    maybe(.error(error))
                     return
                 }
                 guard record != nil else {
-                    single(.error(RxCKError.fetch))
+                    maybe(.completed)
                     return
                 }
-                single(.success(record!))
+                maybe(.success(record!))
             }
             return Disposables.create()
         }
     }
 
-    public static func delete(with recordID: CKRecordID, in database: CKDatabase) -> Single<CKRecordID> {
-        return Single<CKRecordID>.create { single in
+    public static func delete(with recordID: CKRecordID, in database: CKDatabase) -> Maybe<CKRecordID> {
+        return Maybe<CKRecordID>.create { maybe in
             database.delete(withRecordID: recordID) { (recordID, error) in
                 if let error = error {
-                    single(.error(error))
+                    maybe(.error(error))
                     return
                 }
                 guard recordID != nil else {
-                    single(.error(RxCKError.delete))
+                    maybe(.completed)
                     return
                 }
-                single(.success(recordID!))
+                maybe(.success(recordID!))
             }
             return Disposables.create()
         }

@@ -11,52 +11,52 @@ import CloudKit
 
 public extension Reactive where Base: CKSubscription {
 
-    public func save(in database: CKDatabase) -> Single<CKSubscription> {
-        return Single<CKSubscription>.create { single in
+    public func save(in database: CKDatabase) -> Maybe<CKSubscription> {
+        return Maybe<CKSubscription>.create { maybe in
             database.save(self.base) { (result, error) in
                 if let error = error {
-                    single(.error(error))
+                    maybe(.error(error))
                     return
                 }
                 guard result != nil else {
-                    single(.error(RxCKError.save))
+                    maybe(.completed)
                     return
                 }
-                single(.success(result!))
+                maybe(.success(result!))
             }
             return Disposables.create()
         }
     }
     
-    public static func fetch(with subscriptionID: String, in database: CKDatabase) -> Single<CKSubscription> {
-        return Single<CKSubscription>.create { single in
+    public static func fetch(with subscriptionID: String, in database: CKDatabase) -> Maybe<CKSubscription> {
+        return Maybe<CKSubscription>.create { maybe in
             database.fetch(withSubscriptionID: subscriptionID) { (subscription, error) in
                 if let error = error {
-                    single(.error(error))
+                    maybe(.error(error))
                     return
                 }
                 guard subscription != nil else {
-                    single(.error(RxCKError.fetch))
+                    maybe(.completed)
                     return
                 }
-                single(.success(subscription!))
+                maybe(.success(subscription!))
             }
             return Disposables.create()
         }
     }
     
-    public static func delete(with subscriptionID: String, in database: CKDatabase) -> Single<String> {
-        return Single<String>.create { single in
+    public static func delete(with subscriptionID: String, in database: CKDatabase) -> Maybe<String> {
+        return Maybe<String>.create { maybe in
             database.delete(withSubscriptionID: subscriptionID) { (subscriptionID, error) in
                 if let error = error {
-                    single(.error(error))
+                    maybe(.error(error))
                     return
                 }
                 guard subscriptionID != nil else {
-                    single(.error(RxCKError.delete))
+                    maybe(.completed)
                     return
                 }
-                single(.success(subscriptionID!))
+                maybe(.success(subscriptionID!))
             }
             return Disposables.create()
         }

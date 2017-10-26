@@ -8,13 +8,6 @@
 
 import RxSwift
 
-public enum RxCKError: Error {
-    case delete
-    case fetch
-    case save
-    case unknown
-}
-
 public enum SerializationError: Error {
     case structRequired
     case unknownEntity(name: String)

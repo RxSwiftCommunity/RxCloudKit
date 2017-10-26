@@ -13,7 +13,7 @@ public extension Reactive where Base: CKDatabase {
 
     // MARK:- zones
 
-    public func fetch(with recordZoneID: CKRecordZoneID) -> Single<CKRecordZone> {
+    public func fetch(with recordZoneID: CKRecordZoneID) -> Maybe<CKRecordZone> {
         return CKRecordZone.rx.fetch(with: recordZoneID, in: self.base)
     }
 
@@ -27,15 +27,15 @@ public extension Reactive where Base: CKDatabase {
 
     // MARK:- records
 
-    public func save(record: CKRecord) -> Single<CKRecord> {
+    public func save(record: CKRecord) -> Maybe<CKRecord> {
         return record.rx.save(in: self.base)
     }
 
-    public func fetch(with recordID: CKRecordID) -> Single<CKRecord> {
+    public func fetch(with recordID: CKRecordID) -> Maybe<CKRecord> {
         return CKRecord.rx.fetch(with: recordID, in: self.base)
     }
 
-    public func delete(with recordID: CKRecordID) -> Single<CKRecordID> {
+    public func delete(with recordID: CKRecordID) -> Maybe<CKRecordID> {
         return CKRecord.rx.delete(with: recordID, in: self.base)
     }
 
@@ -53,15 +53,15 @@ public extension Reactive where Base: CKDatabase {
 
     // MARK:- subscriptions
 
-    public func save(subscription: CKSubscription) -> Single<CKSubscription> {
+    public func save(subscription: CKSubscription) -> Maybe<CKSubscription> {
         return subscription.rx.save(in: self.base)
     }
 
-    public func fetch(with subscriptionID: String) -> Single<CKSubscription> {
+    public func fetch(with subscriptionID: String) -> Maybe<CKSubscription> {
         return CKSubscription.rx.fetch(with: subscriptionID, in: self.base)
     }
 
-    public func delete(with subscriptionID: String) -> Single<String> {
+    public func delete(with subscriptionID: String) -> Maybe<String> {
         return CKSubscription.rx.delete(with: subscriptionID, in: self.base)
     }
 
