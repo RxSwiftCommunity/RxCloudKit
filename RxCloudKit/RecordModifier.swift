@@ -10,8 +10,8 @@ import RxSwift
 import CloudKit
 
 public enum RecordModifyEvent {
-    case progress(CKRecord, Double)
-    case result(CKRecord, Error?)
+    case progress(CKRecord, Double) // save progress
+    case result(CKRecord, Error?) // save result
     case changed([CKRecord])
     case deleted([CKRecordID])
 }
@@ -64,10 +64,12 @@ final class RecordModifier {
     
     // MARK:- callbacks
     
+    // save progress
     private func perRecordProgressBlock(record: CKRecord, progress: Double) {
         observer.on(.next(.progress(record, progress)))
     }
     
+    // save result
     private func perRecordCompletionBlock(record: CKRecord, error: Error?) {
        observer.on(.next(.result(record, error)))
     }
