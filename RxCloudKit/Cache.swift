@@ -38,31 +38,40 @@ public final class Cache {
         self.zoneIDs = zoneIDs
     }
 
-    public func applicationDidFinishLaunching() {
+    public func applicationDidFinishLaunching(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void = {_ in }) {
 
         let zones = zoneIDs.map({ Zone.create(name: $0) })
-        cloud.privateDB.rx.modify(recordZonesToSave: zones, recordZoneIDsToDelete: nil).subscribe { event in
-            switch event {
-            case .success(let (saved, deleted)):
-                print("\(saved)")
-            case .error(let error):
-                print("Error: ", error)
+        
+        cloud
+            .privateDB
+            .rx
+            .modify(recordZonesToSave: zones, recordZoneIDsToDelete: nil).subscribe { event in
+                switch event {
+                case .success(let (saved, deleted)):
+                    print("\(saved)")
+                case .error(let error):
+                    print("Error: ", error)
+                }
             }
-        }.disposed(by: disposeBag)
+            .disposed(by: disposeBag)
 
         let subscription = CKDatabaseSubscription.init(subscriptionID: Cache.privateSubscriptionID)
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true
         subscription.notificationInfo = notificationInfo
         
-        cloud.privateDB.rx.modify(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil).subscribe { event in
-            switch event {
-            case .success(let (saved, deleted)):
-                print("\(saved)")
-            case .error(let error):
-                print("Error: ", error)
+        cloud
+            .privateDB
+            .rx
+            .modify(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil).subscribe { event in
+                switch event {
+                case .success(let (saved, deleted)):
+                    print("\(saved)")
+                case .error(let error):
+                    print("Error: ", error)
+                }
             }
-        }.disposed(by: disposeBag)
+            .disposed(by: disposeBag)
 
         // TODO same for shared
 
@@ -71,6 +80,8 @@ public final class Cache {
         //self.createZoneGroup.leave()
 //        createZoneGroup.notify(queue: DispatchQueue.global()) {
 //        }
+
+        self.fetchDatabaseChanges(fetchCompletionHandler: completionHandler)
 
     }
 
