@@ -44,7 +44,7 @@ public extension Reactive where Base: CKRecordZone {
         }
     }
 
-    public static func fetchChanges(previousServerChangeToken: CKServerChangeToken?, limit: Int = 99, in database: CKDatabase) -> Observable<ZoneEvent> {
+    public static func fetchChanges(previousServerChangeToken: CKServerChangeToken?, limit: Int = 400, in database: CKDatabase) -> Observable<ZoneEvent> {
         return Observable.create { observer in
             _ = ZoneChangeFetcher(observer: observer, database: database, previousServerChangeToken: previousServerChangeToken, limit: limit)
             return Disposables.create()

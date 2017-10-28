@@ -62,7 +62,7 @@ public extension Reactive where Base: CKRecord {
         }
     }
 
-    public static func fetch(recordType: String, predicate: NSPredicate = NSPredicate(value: true), sortDescriptors: [NSSortDescriptor]? = nil, limit: Int = 99, in database: CKDatabase) -> Observable<CKRecord> {
+    public static func fetch(recordType: String, predicate: NSPredicate = NSPredicate(value: true), sortDescriptors: [NSSortDescriptor]? = nil, limit: Int = 400, in database: CKDatabase) -> Observable<CKRecord> {
         return Observable.create { observer in
             let query = CKQuery(recordType: recordType, predicate: predicate)
             query.sortDescriptors = sortDescriptors

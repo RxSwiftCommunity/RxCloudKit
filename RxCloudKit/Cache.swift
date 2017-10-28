@@ -38,10 +38,10 @@ public final class Cache {
         self.zoneIDs = zoneIDs
     }
 
-    public func applicationDidFinishLaunching(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void = {_ in }) {
+    public func applicationDidFinishLaunching(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void = { _ in }) {
 
         let zones = zoneIDs.map({ Zone.create(name: $0) })
-        
+
         cloud
             .privateDB
             .rx
@@ -59,7 +59,7 @@ public final class Cache {
         let notificationInfo = CKNotificationInfo()
         notificationInfo.shouldSendContentAvailable = true
         subscription.notificationInfo = notificationInfo
-        
+
         cloud
             .privateDB
             .rx
@@ -97,7 +97,7 @@ public final class Cache {
             switch event {
             case .next(let zoneEvent):
                 print("\(zoneEvent)")
-                
+
                 switch zoneEvent {
                 case .changed(let zoneID):
                     print("changed: \(zoneID)")
@@ -110,16 +110,16 @@ public final class Cache {
                     self.token.save(token: token, for: Cache.privateTokenKey)
                     self.processAndPurgeCachedZones(fetchCompletionHandler: completionHandler)
                 }
-                
+
             case .error(let error):
                 print("Error: ", error)
                 completionHandler(.failed)
             case .completed:
-                
+
                 if self.cachedZoneIDs.count == 0 {
                     completionHandler(.noData)
                 }
-                
+
             }
         }.disposed(by: disposeBag)
     }
@@ -136,40 +136,49 @@ public final class Cache {
             }
         }
 
-        cloud.privateDB.rx.fetchChanges(recordZoneIDs: recordZoneIDs, optionsByRecordZoneID: optionsByRecordZoneID).subscribe { event in
-            switch event {
-            case .next(let recordEvent):
-                print("\(recordEvent)")
-                
-                switch recordEvent {
-                case .changed(let record):
-                    print("changed: \(record)")
-                    self.delegate.cache(record: record)
-                case .deleted(let recordID):
-                    print("deleted: \(recordID)")
-                    self.delegate.deleteCache(for: recordID)
-                case .token(let (zoneID, token)):
-                    print("token: \(zoneID)->\(token)")
-                    self.token.save(zoneID: zoneID, token: token, for: Cache.zoneTokenMapKey)
+        cloud
+            .privateDB
+            .rx
+            .fetchChanges(recordZoneIDs: recordZoneIDs, optionsByRecordZoneID: optionsByRecordZoneID).subscribe { event in
+                switch event {
+                case .next(let recordEvent):
+                    print("\(recordEvent)")
+
+                    switch recordEvent {
+                    case .changed(let record):
+                        print("changed: \(record)")
+                        self.delegate.cache(record: record)
+                    case .deleted(let recordID):
+                        print("deleted: \(recordID)")
+                        self.delegate.deleteCache(for: recordID)
+                    case .token(let (zoneID, token)):
+                        print("token: \(zoneID)->\(token)")
+                        self.token.save(zoneID: zoneID, token: token, for: Cache.zoneTokenMapKey)
+                    }
+
+                case .error(let error):
+                    print("Error: ", error)
+                    completionHandler(.failed)
+                case .completed:
+                    completionHandler(.newData)
                 }
-                
-            case .error(let error):
-                print("Error: ", error)
-                completionHandler(.failed)
-            case .completed:
-                completionHandler(.newData)
             }
-        }.disposed(by: disposeBag)
+            .disposed(by: disposeBag)
     }
-    
+
     public func cacheChanged(zoneID: CKRecordZoneID) {
         self.cachedZoneIDs.append(zoneID)
     }
-    
+
     public func processAndPurgeCachedZones(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        guard !self.cachedZoneIDs.isEmpty else {
+            completionHandler(.noData)
+            return
+        }
+        
         let recordZoneIDs = self.cachedZoneIDs
         self.cachedZoneIDs = []
         self.fetchZoneChanges(recordZoneIDs: recordZoneIDs, fetchCompletionHandler: completionHandler)
     }
-    
+
 }
