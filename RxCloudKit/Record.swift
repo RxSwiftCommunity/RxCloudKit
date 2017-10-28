@@ -58,6 +58,10 @@ public extension RxCKRecord {
         self.readUserFields(from: record)
     }
     
+    public func id() throws -> String {
+        return try self.asCKRecord().recordID.recordName
+    }
+    
     public func recordName() -> String? { return nil }
 
     public func asCKRecord() throws -> CKRecord {
