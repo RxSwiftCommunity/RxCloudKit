@@ -74,10 +74,10 @@ public extension RxCKRecord {
     }
 
     /**  query on CKRecord system field(s) with NSArray.filtered(using: predicate) */
-    func predicate(with block: @escaping (CKRecord) -> Bool) -> NSPredicate {
+    static func predicate(with block: @escaping (CKRecord) -> Bool) -> NSPredicate {
         return NSPredicate { (object, bindings) -> Bool in
             if let entity = object {
-                if let rxCKRecord = entity as? Self {
+                if let rxCKRecord = entity as? RxCKRecord {
                     if let ckRecord = rxCKRecord.fromMetadata() {
                         return block(ckRecord)
                     }
