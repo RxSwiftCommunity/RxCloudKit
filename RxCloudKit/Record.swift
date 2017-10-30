@@ -52,18 +52,28 @@ public extension RxCKRecord {
 //            objc_setAssociatedObject(self, &AssociatedObjectHandle, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 //        }
 //    }
+    
+    /** CloudKit zoneID */
+    public static var zoneID: CKRecordZoneID {
+        get {
+            return CKRecordZone(zoneName: Self.zone).zoneID
+        }
+    }
 
+    public func recordName() -> String? { return nil }
+    
+    /** CloudKit recordName (if metadata != nil) */
+    public func id() -> String? {
+        return self.fromMetadata()?.recordID.recordName
+    }
+
+    /** read from CKRecord */
     public mutating func read(from record: CKRecord) {
         self.readMetadata(from: record)
         self.readUserFields(from: record)
     }
     
-    public func id() throws -> String {
-        return try self.asCKRecord().recordID.recordName
-    }
-    
-    public func recordName() -> String? { return nil }
-
+    /** as CKRecord (will init metadata if metadata == nil ) */
     public func asCKRecord() throws -> CKRecord {
         let record = self.fromMetadata() ?? Self.newCKRecord(name: self.recordName())
         try self.writeUserFields(to: record)
@@ -82,11 +92,6 @@ public extension RxCKRecord {
         }
     }
 
-    public static var zoneID: CKRecordZoneID {
-        get {
-            return CKRecordZone(zoneName: Self.zone).zoneID
-        }
-    }
 
     /** create empty CKRecord with name for type */
     public static func create(name: String) -> CKRecord {
@@ -95,7 +100,7 @@ public extension RxCKRecord {
         return record
     }
 
-    public mutating func readMetadata(from record: CKRecord) {
+    mutating func readMetadata(from record: CKRecord) {
         let data = NSMutableData()
         let coder = NSKeyedArchiver.init(forWritingWith: data)
         coder.requiresSecureCoding = true
