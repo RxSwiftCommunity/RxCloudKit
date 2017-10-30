@@ -34,7 +34,7 @@ public protocol RxCKRecord {
 
     /** predicate to uniquely identify the record, such as: NSPredicate(format: "code == '\(code)'") */
     func predicate() -> NSPredicate
-    
+
     /** custom recordName if desired (must be unique per DB) */
     func recordName() -> String?
 
@@ -52,16 +52,9 @@ public extension RxCKRecord {
 //            objc_setAssociatedObject(self, &AssociatedObjectHandle, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 //        }
 //    }
-    
-    /** CloudKit zoneID */
-    public static var zoneID: CKRecordZoneID {
-        get {
-            return CKRecordZone(zoneName: Self.zone).zoneID
-        }
-    }
 
     public func recordName() -> String? { return nil }
-    
+
     /** CloudKit recordName (if metadata != nil) */
     public func id() -> String? {
         return self.fromMetadata()?.recordID.recordName
@@ -72,12 +65,33 @@ public extension RxCKRecord {
         self.readMetadata(from: record)
         self.readUserFields(from: record)
     }
-    
+
     /** as CKRecord (will init metadata if metadata == nil ) */
     public func asCKRecord() throws -> CKRecord {
         let record = self.fromMetadata() ?? Self.newCKRecord(name: self.recordName())
         try self.writeUserFields(to: record)
         return record
+    }
+
+    /**  query on CKRecord system field(s) with NSArray.filtered(using: predicate) */
+    func predicate(with block: @escaping (CKRecord) -> Bool) -> NSPredicate {
+        return NSPredicate { (object, bindings) -> Bool in
+            if let entity = object {
+                if let rxCKRecord = entity as? Self {
+                    if let ckRecord = rxCKRecord.fromMetadata() {
+                        return block(ckRecord)
+                    }
+                }
+            }
+            return false
+        }
+    }
+
+    /** CloudKit zoneID */
+    public static var zoneID: CKRecordZoneID {
+        get {
+            return CKRecordZone(zoneName: Self.zone).zoneID
+        }
     }
 
     /** create empty CKRecord for zone and type (and name, if provided via .recordName() method) */
@@ -100,7 +114,7 @@ public extension RxCKRecord {
         return record
     }
 
-    mutating func readMetadata(from record: CKRecord) {
+    public mutating func readMetadata(from record: CKRecord) {
         let data = NSMutableData()
         let coder = NSKeyedArchiver.init(forWritingWith: data)
         coder.requiresSecureCoding = true
