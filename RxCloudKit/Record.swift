@@ -74,10 +74,10 @@ public extension RxCKRecord {
     }
 
     /**  query on CKRecord system field(s) with NSArray.filtered(using: predicate) */
-    static func predicate(with block: @escaping (CKRecord) -> Bool) -> NSPredicate {
+    public static func predicate(block: @escaping (CKRecord) -> Bool) -> NSPredicate {
         return NSPredicate { (object, bindings) -> Bool in
             if let entity = object {
-                if let rxCKRecord = entity as? RxCKRecord {
+                if let rxCKRecord = entity as? Self {
                     if let ckRecord = rxCKRecord.fromMetadata() {
                         return block(ckRecord)
                     }
@@ -86,7 +86,7 @@ public extension RxCKRecord {
             return false
         }
     }
-
+    
     /** CloudKit zoneID */
     public static var zoneID: CKRecordZoneID {
         get {
