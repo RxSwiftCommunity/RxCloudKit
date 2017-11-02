@@ -9,7 +9,7 @@
 import os.log
 
 struct Log {
-    fileprivate static let subsystem: String = Bundle.main.bundleIdentifier
+    fileprivate static let subsystem: String = Bundle.main.bundleIdentifier ?? ""
     
     static let cache = OSLog(subsystem: subsystem, category: "cache")
 }

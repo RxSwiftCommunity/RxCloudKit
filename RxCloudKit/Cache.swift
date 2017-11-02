@@ -51,7 +51,7 @@ public final class Cache {
                 case .success(let (saved, deleted)):
                     os_log("saved", log: Log.cache, type: .info)
                 case .error(let error):
-                    os_log("error: %@", log: Log.cache, type: .error, error)
+                    os_log("error: %@", log: Log.cache, type: .error, error.localizedDescription)
                 }
             }
             .disposed(by: disposeBag)
@@ -69,7 +69,7 @@ public final class Cache {
                 case .success(let (saved, deleted)):
                     os_log("saved", log: Log.cache, type: .info)
                 case .error(let error):
-                    os_log("error: %@", log: Log.cache, type: .error, error)
+                    os_log("error: %@", log: Log.cache, type: .error, error.localizedDescription)
                 }
             }
             .disposed(by: disposeBag)
@@ -113,7 +113,7 @@ public final class Cache {
                 }
 
             case .error(let error):
-                os_log("error: %@", log: Log.cache, type: .error, error)
+                os_log("error: %@", log: Log.cache, type: .error, error.localizedDescription)
                 completionHandler(.failed)
             case .completed:
 
@@ -147,10 +147,10 @@ public final class Cache {
 
                     switch recordEvent {
                     case .changed(let record):
-                        print("changed: \(record)")
+                        os_log("changed: %@", log: Log.cache, type: .info, record)
                         self.delegate.cache(record: record)
                     case .deleted(let recordID):
-                        print("deleted: \(recordID)")
+                        os_log("deleted: %@", log: Log.cache, type: .info, recordID)
                         self.delegate.deleteCache(for: recordID)
                     case .token(let (zoneID, token)):
                         print("token: \(zoneID)->\(token)")
@@ -158,7 +158,7 @@ public final class Cache {
                     }
 
                 case .error(let error):
-                    os_log("error: %@", log: Log.cache, type: .error, error)
+                    os_log("error: %@", log: Log.cache, type: .error, error.localizedDescription)
                     completionHandler(.failed)
                 case .completed:
                     completionHandler(.newData)
