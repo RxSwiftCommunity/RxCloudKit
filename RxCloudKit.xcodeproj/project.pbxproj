@@ -12,6 +12,7 @@
 		944AB4251EFC28C7003852DF /* RxCloudKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 944AB4171EFC28C6003852DF /* RxCloudKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		944AB42F1EFC29DE003852DF /* CKDatabase+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944AB42E1EFC29DE003852DF /* CKDatabase+Rx.swift */; };
 		944AB4331EFC2AB9003852DF /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 944AB4321EFC2AB9003852DF /* RxSwift.framework */; };
+		94569BE51FABA1F200C5D25A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94569BE41FABA1F200C5D25A /* Log.swift */; };
 		948486DB1EFC4153009FBD3A /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DA1EFC4153009FBD3A /* Error.swift */; };
 		948486DD1EFC415F009FBD3A /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DC1EFC415F009FBD3A /* Record.swift */; };
 		948486DF1EFC6047009FBD3A /* RecordFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948486DE1EFC6047009FBD3A /* RecordFetcher.swift */; };
@@ -48,6 +49,7 @@
 		944AB4241EFC28C7003852DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		944AB42E1EFC29DE003852DF /* CKDatabase+Rx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKDatabase+Rx.swift"; sourceTree = "<group>"; };
 		944AB4321EFC2AB9003852DF /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		94569BE41FABA1F200C5D25A /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		94837C511EFDB42600138E22 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		948486DA1EFC4153009FBD3A /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		948486DC1EFC415F009FBD3A /* Record.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 		944AB4161EFC28C6003852DF /* RxCloudKit */ = {
 			isa = PBXGroup;
 			children = (
+				94569BE41FABA1F200C5D25A /* Log.swift */,
 				BA4F7E2A1F3CC8520044F60E /* Cloud.swift */,
 				BA9E7A0A1F3E254700F450EA /* Token.swift */,
 				BA4F7E281F3CC7000044F60E /* Cache.swift */,
@@ -308,6 +311,7 @@
 				BA9E7A0B1F3E254700F450EA /* Token.swift in Sources */,
 				948486DD1EFC415F009FBD3A /* Record.swift in Sources */,
 				BA4F7E291F3CC7000044F60E /* Cache.swift in Sources */,
+				94569BE51FABA1F200C5D25A /* Log.swift in Sources */,
 				948630951F0045A300752EEB /* CKSubscription+Rx.swift in Sources */,
 				948486DF1EFC6047009FBD3A /* RecordFetcher.swift in Sources */,
 				BA9E7A111F3ECE9000F450EA /* Subscription.swift in Sources */,

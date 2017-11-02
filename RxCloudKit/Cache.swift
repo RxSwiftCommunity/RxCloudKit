@@ -48,9 +48,9 @@ public final class Cache {
             .modify(recordZonesToSave: zones, recordZoneIDsToDelete: nil).subscribe { event in
                 switch event {
                 case .success(let (saved, deleted)):
-                    print("\(saved)")
+                    os_log("saved", log: Log.cache, type: .info)
                 case .error(let error):
-                    print("Error: ", error)
+                    os_log("error: %@", log: Log.cache, type: .error, error)
                 }
             }
             .disposed(by: disposeBag)
@@ -66,9 +66,9 @@ public final class Cache {
             .modify(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil).subscribe { event in
                 switch event {
                 case .success(let (saved, deleted)):
-                    print("\(saved)")
+                    os_log("saved", log: Log.cache, type: .info)
                 case .error(let error):
-                    print("Error: ", error)
+                    os_log("error: %@", log: Log.cache, type: .error, error)
                 }
             }
             .disposed(by: disposeBag)
@@ -100,19 +100,19 @@ public final class Cache {
 
                 switch zoneEvent {
                 case .changed(let zoneID):
-                    print("changed: \(zoneID)")
+                    os_log("changed: %@", log: Log.cache, type: .info, zoneID)
                     self.cacheChanged(zoneID: zoneID)
                 case .deleted(let zoneID):
-                    print("deleted: \(zoneID)")
+                    os_log("deleted: %@", log: Log.cache, type: .info, zoneID)
                     self.delegate.deleteCache(in: zoneID)
                 case .token(let token):
-                    print("token: \(token)")
+                    os_log("token: %@", log: Log.cache, type: .info, token)
                     self.token.save(token: token, for: Cache.privateTokenKey)
                     self.processAndPurgeCachedZones(fetchCompletionHandler: completionHandler)
                 }
 
             case .error(let error):
-                print("Error: ", error)
+                os_log("error: %@", log: Log.cache, type: .error, error)
                 completionHandler(.failed)
             case .completed:
 
@@ -157,7 +157,7 @@ public final class Cache {
                     }
 
                 case .error(let error):
-                    print("Error: ", error)
+                    os_log("error: %@", log: Log.cache, type: .error, error)
                     completionHandler(.failed)
                 case .completed:
                     completionHandler(.newData)
