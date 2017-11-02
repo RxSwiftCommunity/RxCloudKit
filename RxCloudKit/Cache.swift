@@ -6,6 +6,7 @@
 //  Copyright © 2017 Maxim Volgin. All rights reserved.
 //
 
+import os.log
 import RxSwift
 import CloudKit
 
