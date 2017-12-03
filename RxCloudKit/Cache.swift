@@ -28,7 +28,7 @@ public final class Cache {
     public let cloud = Cloud()
     public let zoneIDs: [String]
 
-    private let token = Token()
+    private let local = Local()
     private let delegate: CacheDelegate
     private let disposeBag = DisposeBag()
     private var cachedZoneIDs: [CKRecordZoneID] = []
@@ -56,23 +56,38 @@ public final class Cache {
             }
             .disposed(by: disposeBag)
 
-        let subscription = CKDatabaseSubscription.init(subscriptionID: Cache.privateSubscriptionID)
-        let notificationInfo = CKNotificationInfo()
-        notificationInfo.shouldSendContentAvailable = true
-        subscription.notificationInfo = notificationInfo
+        if let subscriptionId = self.local.subscriptionID(for: Cache.privateSubscriptionID) {
+//            cloud
+//                .privateDB
+//                .rx
+//                .fetch(with: subscriptionId)
+            // TODO
+            //                        let subscription = CKDatabaseSubscription.init(subscriptionID: Cache.privateSubscriptionID)
+        } else {
 
-        cloud
-            .privateDB
-            .rx
-            .modify(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil).subscribe { event in
-                switch event {
-                case .success(let (saved, deleted)):
-                    os_log("saved", log: Log.cache, type: .info)
-                case .error(let error):
-                    os_log("error: %@", log: Log.cache, type: .error, error.localizedDescription)
+            let subscription = CKDatabaseSubscription()
+            let notificationInfo = CKNotificationInfo()
+            notificationInfo.shouldSendContentAvailable = true
+            subscription.notificationInfo = notificationInfo
+
+            cloud
+                .privateDB
+                .rx
+                .modify(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil).subscribe { event in
+                    switch event {
+                    case .success(let (saved, deleted)):
+                        os_log("saved", log: Log.cache, type: .info)
+                        if let subscriptions = saved {
+                            for subscription in subscriptions {
+                                self.local.save(subscriptionID: subscription.subscriptionID, for: Cache.privateSubscriptionID)
+                            }
+                        }
+                    case .error(let error):
+                        os_log("error: %@", log: Log.cache, type: .error, error.localizedDescription)
+                    }
                 }
-            }
-            .disposed(by: disposeBag)
+                .disposed(by: disposeBag)
+        }
 
         // TODO same for shared
 
@@ -93,7 +108,7 @@ public final class Cache {
     }
 
     public func fetchDatabaseChanges(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        let token = self.token.token(for: Cache.privateTokenKey)
+        let token = self.local.token(for: Cache.privateTokenKey)
         cloud.privateDB.rx.fetchChanges(previousServerChangeToken: token).subscribe { event in
             switch event {
             case .next(let zoneEvent):
@@ -108,7 +123,7 @@ public final class Cache {
                     self.delegate.deleteCache(in: zoneID)
                 case .token(let token):
                     os_log("token: %@", log: Log.cache, type: .info, token)
-                    self.token.save(token: token, for: Cache.privateTokenKey)
+                    self.local.save(token: token, for: Cache.privateTokenKey)
                     self.processAndPurgeCachedZones(fetchCompletionHandler: completionHandler)
                 }
 
@@ -128,7 +143,7 @@ public final class Cache {
     public func fetchZoneChanges(recordZoneIDs: [CKRecordZoneID], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         var optionsByRecordZoneID: [CKRecordZoneID: CKFetchRecordZoneChangesOptions] = [:]
 
-        let tokenMap = self.token.zoneTokenMap(for: Cache.zoneTokenMapKey)
+        let tokenMap = self.local.zoneTokenMap(for: Cache.zoneTokenMapKey)
         for recordZoneID in recordZoneIDs {
             if let token = tokenMap[recordZoneID] {
                 let options = CKFetchRecordZoneChangesOptions()
@@ -154,7 +169,7 @@ public final class Cache {
                         self.delegate.deleteCache(for: recordID)
                     case .token(let (zoneID, token)):
                         print("token: \(zoneID)->\(token)")
-                        self.token.save(zoneID: zoneID, token: token, for: Cache.zoneTokenMapKey)
+                        self.local.save(zoneID: zoneID, token: token, for: Cache.zoneTokenMapKey)
                     }
 
                 case .error(let error):
@@ -176,7 +191,7 @@ public final class Cache {
             completionHandler(.noData)
             return
         }
-        
+
         let recordZoneIDs = self.cachedZoneIDs
         self.cachedZoneIDs = []
         self.fetchZoneChanges(recordZoneIDs: recordZoneIDs, fetchCompletionHandler: completionHandler)

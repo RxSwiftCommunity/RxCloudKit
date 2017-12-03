@@ -24,7 +24,7 @@
 		BA4F7E2B1F3CC8520044F60E /* Cloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2A1F3CC8520044F60E /* Cloud.swift */; };
 		BA4F7E2D1F3D6F210044F60E /* ZoneChangeFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2C1F3D6F210044F60E /* ZoneChangeFetcher.swift */; };
 		BA4F7E2F1F3D7E2F0044F60E /* RecordChangeFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4F7E2E1F3D7E2F0044F60E /* RecordChangeFetcher.swift */; };
-		BA9E7A0B1F3E254700F450EA /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9E7A0A1F3E254700F450EA /* Token.swift */; };
+		BA9E7A0B1F3E254700F450EA /* Local.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9E7A0A1F3E254700F450EA /* Local.swift */; };
 		BA9E7A0F1F3ECE8900F450EA /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9E7A0E1F3ECE8900F450EA /* Zone.swift */; };
 		BA9E7A111F3ECE9000F450EA /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9E7A101F3ECE9000F450EA /* Subscription.swift */; };
 		BA9E7A191F3F8C7900F450EA /* RecordModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9E7A181F3F8C7900F450EA /* RecordModifier.swift */; };
@@ -62,7 +62,7 @@
 		BA4F7E2A1F3CC8520044F60E /* Cloud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cloud.swift; sourceTree = "<group>"; };
 		BA4F7E2C1F3D6F210044F60E /* ZoneChangeFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoneChangeFetcher.swift; sourceTree = "<group>"; };
 		BA4F7E2E1F3D7E2F0044F60E /* RecordChangeFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordChangeFetcher.swift; sourceTree = "<group>"; };
-		BA9E7A0A1F3E254700F450EA /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		BA9E7A0A1F3E254700F450EA /* Local.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Local.swift; sourceTree = "<group>"; };
 		BA9E7A0E1F3ECE8900F450EA /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		BA9E7A101F3ECE9000F450EA /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		BA9E7A121F3F011500F450EA /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 			children = (
 				94569BE41FABA1F200C5D25A /* Log.swift */,
 				BA4F7E2A1F3CC8520044F60E /* Cloud.swift */,
-				BA9E7A0A1F3E254700F450EA /* Token.swift */,
+				BA9E7A0A1F3E254700F450EA /* Local.swift */,
 				BA4F7E281F3CC7000044F60E /* Cache.swift */,
 				948486DA1EFC4153009FBD3A /* Error.swift */,
 				948486DC1EFC415F009FBD3A /* Record.swift */,
@@ -308,7 +308,7 @@
 				BA4F7E2F1F3D7E2F0044F60E /* RecordChangeFetcher.swift in Sources */,
 				948630931F00459600752EEB /* CKRecord+Rx.swift in Sources */,
 				BA4F7E2B1F3CC8520044F60E /* Cloud.swift in Sources */,
-				BA9E7A0B1F3E254700F450EA /* Token.swift in Sources */,
+				BA9E7A0B1F3E254700F450EA /* Local.swift in Sources */,
 				948486DD1EFC415F009FBD3A /* Record.swift in Sources */,
 				BA4F7E291F3CC7000044F60E /* Cache.swift in Sources */,
 				94569BE51FABA1F200C5D25A /* Log.swift in Sources */,
