@@ -27,8 +27,8 @@ public final class Cache {
 
     public let cloud = Cloud()
     public let zoneIDs: [String]
+    public let local = Local()
 
-    private let local = Local()
     private let delegate: CacheDelegate
     private let disposeBag = DisposeBag()
     private var cachedZoneIDs: [CKRecordZoneID] = []
