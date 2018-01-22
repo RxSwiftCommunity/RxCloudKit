@@ -11,9 +11,12 @@ import RxSwift
 import CloudKit
 
 public protocol CacheDelegate {
+    // private db
     func cache(record: CKRecord)
     func deleteCache(for recordID: CKRecordID)
     func deleteCache(in zoneID: CKRecordZoneID)
+    // any db (via subscription)
+    func query(notification: CKQueryNotification, fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 }
 
 public final class Cache {
@@ -103,8 +106,21 @@ public final class Cache {
 
     public func applicationDidReceiveRemoteNotification(userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let dict = userInfo as! [String: NSObject]
-        guard let notification: CKDatabaseNotification = CKNotification(fromRemoteNotificationDictionary: dict) as? CKDatabaseNotification else { return }
-        self.fetchDatabaseChanges(fetchCompletionHandler: completionHandler)
+        let notification = CKNotification(fromRemoteNotificationDictionary: dict)
+        
+        switch notification.notificationType {
+        case CKNotificationType.query:
+            let queryNotification = notification as! CKQueryNotification
+            self.delegate.query(notification: queryNotification, fetchCompletionHandler: completionHandler)
+        case CKNotificationType.database:
+            self.fetchDatabaseChanges(fetchCompletionHandler: completionHandler)
+        case CKNotificationType.readNotification:
+            // TODO
+            break
+        case CKNotificationType.recordZone:
+            // TODO
+            break
+        }
     }
 
     public func fetchDatabaseChanges(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -168,7 +184,7 @@ public final class Cache {
                         os_log("deleted: %@", log: Log.cache, type: .info, recordID)
                         self.delegate.deleteCache(for: recordID)
                     case .token(let (zoneID, token)):
-                        print("token: \(zoneID)->\(token)")
+                        os_log("token: %@", log: Log.cache, type: .info, "\(zoneID)->\(token)")
                         self.local.save(zoneID: zoneID, token: token, for: Cache.zoneTokenMapKey)
                     }
 
