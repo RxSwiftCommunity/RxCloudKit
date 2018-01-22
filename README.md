@@ -70,6 +70,10 @@ extension AppDelegate: CacheDelegate {
     public func deleteCache(in zoneID: CKRecordZoneID) {
         // TODO delete everything relevant to zone in CoreData
     }
+    
+    public func query(notification: CKQueryNotification, fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // TODO store/delete record in CoreData
+    }
 
 }
 ```
@@ -77,7 +81,7 @@ extension AppDelegate: CacheDelegate {
 Carthage setup.
 
 ```
-github "maxvol/RxCloudKit" ~> 0.0.19
+github "maxvol/RxCloudKit" ~> 1.0.0
 
 ```
 

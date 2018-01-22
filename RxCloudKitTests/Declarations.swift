@@ -15,12 +15,25 @@ struct MyRecord {
     var myIntField: Int
     var myBoolField: Bool
     var myStringField: String
+    // required
+    var metadata: Data? = nil
 }
 
 extension MyRecord: RxCloudKit.RxCKRecord {
-
     static var type = "MyRecord"
+    static var zone = CKRecordZone.default().zoneID.zoneName
 
+    mutating func readUserFields(from record: CKRecord) {
+        self.myStringField = record.object(forKey: "myStringField") as? String ?? ""
+        // TODOmyStringField
+    }
+    func predicate() -> NSPredicate {
+        return NSPredicate(format: "myStringField = \(myStringField)")
+    }
+    func recordName() -> String? {
+        return myStringField
+    }
+    
     init(record: CKRecord) {
         self.myIntField = record["myIntField"] as? Int ?? 0
         self.myBoolField = record["myBoolField"] as? Bool ?? false
