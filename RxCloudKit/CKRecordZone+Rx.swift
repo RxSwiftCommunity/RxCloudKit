@@ -11,7 +11,7 @@ import CloudKit
 
 public extension Reactive where Base: CKRecordZone {
 
-    public static func fetch(with recordZoneID: CKRecordZoneID, in database: CKDatabase) -> Maybe<CKRecordZone> {
+    static func fetch(with recordZoneID: CKRecordZone.ID, in database: CKDatabase) -> Maybe<CKRecordZone> {
         return Maybe<CKRecordZone>.create { maybe in
             database.fetch(withRecordZoneID: recordZoneID) { (zone, error) in
                 if let error = error {
@@ -28,8 +28,8 @@ public extension Reactive where Base: CKRecordZone {
         }
     }
 
-    public static func modify(recordZonesToSave: [CKRecordZone]?, recordZoneIDsToDelete: [CKRecordZoneID]?, in database: CKDatabase) -> Single<([CKRecordZone]?, [CKRecordZoneID]?)> {
-        return Single<([CKRecordZone]?, [CKRecordZoneID]?)>.create { single in
+    static func modify(recordZonesToSave: [CKRecordZone]?, recordZoneIDsToDelete: [CKRecordZone.ID]?, in database: CKDatabase) -> Single<([CKRecordZone]?, [CKRecordZone.ID]?)> {
+        return Single<([CKRecordZone]?, [CKRecordZone.ID]?)>.create { single in
             let operation = CKModifyRecordZonesOperation(recordZonesToSave: recordZonesToSave, recordZoneIDsToDelete: recordZoneIDsToDelete)
             operation.qualityOfService = .userInitiated
             operation.modifyRecordZonesCompletionBlock = { (saved, deleted, error) in
@@ -44,7 +44,7 @@ public extension Reactive where Base: CKRecordZone {
         }
     }
 
-    public static func fetchChanges(previousServerChangeToken: CKServerChangeToken?, limit: Int = 400, in database: CKDatabase) -> Observable<ZoneEvent> {
+    static func fetchChanges(previousServerChangeToken: CKServerChangeToken?, limit: Int = 400, in database: CKDatabase) -> Observable<ZoneEvent> {
         return Observable.create { observer in
             _ = ZoneChangeFetcher(observer: observer, database: database, previousServerChangeToken: previousServerChangeToken, limit: limit)
             return Disposables.create()

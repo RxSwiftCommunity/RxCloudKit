@@ -10,7 +10,7 @@
 import UIKit
 import CloudKit
 
-public typealias ZoneTokenMap = [CKRecordZoneID: CKServerChangeToken]
+public typealias ZoneTokenMap = [CKRecordZone.ID: CKServerChangeToken]
 
 public final class Local {
 
@@ -48,7 +48,7 @@ public final class Local {
         return ZoneTokenMap()
     }
 
-    public func save(zoneID: CKRecordZoneID, token: CKServerChangeToken, for key: String) {
+    public func save(zoneID: CKRecordZone.ID, token: CKServerChangeToken, for key: String) {
         var zoneTokenMap = self.zoneTokenMap(for: key)
         zoneTokenMap[zoneID] = token
         self.save(zoneTokenMap: zoneTokenMap, for: key)
@@ -65,7 +65,7 @@ public final class Local {
         self.defaults.set(data, forKey: key)
     }
 
-    private func key(zoneID: CKRecordZoneID) -> Data {
+    private func key(zoneID: CKRecordZone.ID) -> Data {
         return NSKeyedArchiver.archivedData(withRootObject: zoneID)
     }
 

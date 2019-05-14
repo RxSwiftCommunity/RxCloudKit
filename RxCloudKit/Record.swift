@@ -53,28 +53,28 @@ public extension RxCKRecord {
 //        }
 //    }
 
-    public func recordName() -> String? { return nil }
+    func recordName() -> String? { return nil }
 
     /** CloudKit recordName (if metadata != nil) */
-    public func id() -> String? {
+    func id() -> String? {
         return self.fromMetadata()?.recordID.recordName
     }
 
     /** read from CKRecord */
-    public mutating func read(from record: CKRecord) {
+    mutating func read(from record: CKRecord) {
         self.readMetadata(from: record)
         self.readUserFields(from: record)
     }
 
     /** as CKRecord (will init metadata if metadata == nil ) */
-    public func asCKRecord() throws -> CKRecord {
+    func asCKRecord() throws -> CKRecord {
         let record = self.fromMetadata() ?? Self.newCKRecord(name: self.recordName())
         try self.writeUserFields(to: record)
         return record
     }
 
     /**  query on CKRecord system field(s) with NSArray.filtered(using: predicate) */
-    public static func predicate(block: @escaping (CKRecord) -> Bool) -> NSPredicate {
+    static func predicate(block: @escaping (CKRecord) -> Bool) -> NSPredicate {
         return NSPredicate { (object, bindings) -> Bool in
             if let entity = object {
                 if let rxCKRecord = entity as? Self {
@@ -88,16 +88,16 @@ public extension RxCKRecord {
     }
     
     /** CloudKit zoneID */
-    public static var zoneID: CKRecordZoneID {
+    static var zoneID: CKRecordZone.ID {
         get {
             return CKRecordZone(zoneName: Self.zone).zoneID
         }
     }
 
     /** create empty CKRecord for zone and type (and name, if provided via .recordName() method) */
-    public static func newCKRecord(name: String? = nil) -> CKRecord {
+    static func newCKRecord(name: String? = nil) -> CKRecord {
         if let recordName = name {
-            let id = CKRecordID(recordName: recordName, zoneID: Self.zoneID)
+            let id = CKRecord.ID(recordName: recordName, zoneID: Self.zoneID)
             let record = CKRecord(recordType: Self.type, recordID: id)
             return record
         } else {
@@ -108,13 +108,13 @@ public extension RxCKRecord {
 
 
     /** create empty CKRecord with name for type */
-    public static func create(name: String) -> CKRecord {
-        let id = CKRecordID(recordName: name)
+    static func create(name: String) -> CKRecord {
+        let id = CKRecord.ID(recordName: name)
         let record = CKRecord(recordType: Self.type, recordID: id)
         return record
     }
 
-    public mutating func readMetadata(from record: CKRecord) {
+    mutating func readMetadata(from record: CKRecord) {
         let data = NSMutableData()
         let coder = NSKeyedArchiver.init(forWritingWith: data)
         coder.requiresSecureCoding = true
@@ -123,7 +123,7 @@ public extension RxCKRecord {
         self.metadata = data as Data
     }
 
-    public func fromMetadata() -> CKRecord? {
+    func fromMetadata() -> CKRecord? {
         guard self.metadata != nil else {
             return nil
         }
@@ -134,7 +134,7 @@ public extension RxCKRecord {
         return record
     }
 
-    public func writeUserFields(to record: CKRecord) throws {
+    func writeUserFields(to record: CKRecord) throws {
         let mirror = Mirror(reflecting: self)
         if let displayStyle = mirror.displayStyle {
             guard displayStyle == .struct else {

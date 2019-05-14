@@ -10,8 +10,8 @@ import RxSwift
 import CloudKit
 
 public enum ZoneEvent {
-    case changed(CKRecordZoneID)
-    case deleted(CKRecordZoneID)
+    case changed(CKRecordZone.ID)
+    case deleted(CKRecordZone.ID)
     case token(CKServerChangeToken)
 }
 
@@ -35,11 +35,11 @@ final class ZoneChangeFetcher {
     
     // MARK:- callbacks
     
-    private func recordZoneWithIDChangedBlock(zoneID: CKRecordZoneID) {
+    private func recordZoneWithIDChangedBlock(zoneID: CKRecordZone.ID) {
         self.observer.on(.next(.changed(zoneID)))
     }
     
-    private func recordZoneWithIDWasDeletedBlock(zoneID: CKRecordZoneID) {
+    private func recordZoneWithIDWasDeletedBlock(zoneID: CKRecordZone.ID) {
         self.observer.on(.next(.deleted(zoneID)))
     }
     

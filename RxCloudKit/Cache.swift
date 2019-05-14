@@ -13,8 +13,8 @@ import CloudKit
 public protocol CacheDelegate {
     // private db
     func cache(record: CKRecord)
-    func deleteCache(for recordID: CKRecordID)
-    func deleteCache(in zoneID: CKRecordZoneID)
+    func deleteCache(for recordID: CKRecord.ID)
+    func deleteCache(in zoneID: CKRecordZone.ID)
     // any db (via subscription)
     func query(notification: CKQueryNotification, fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 }
@@ -34,7 +34,7 @@ public final class Cache {
 
     private let delegate: CacheDelegate
     private let disposeBag = DisposeBag()
-    private var cachedZoneIDs: [CKRecordZoneID] = []
+    private var cachedZoneIDs: [CKRecordZone.ID] = []
 //    private var missingZoneIDs: [CKRecordZoneID] = []
 
     public init(delegate: CacheDelegate, zoneIDs: [String]) {
@@ -69,7 +69,7 @@ public final class Cache {
         } else {
 
             let subscription = CKDatabaseSubscription()
-            let notificationInfo = CKNotificationInfo()
+            let notificationInfo = CKSubscription.NotificationInfo()
             notificationInfo.shouldSendContentAvailable = true
             subscription.notificationInfo = notificationInfo
 
@@ -108,7 +108,11 @@ public final class Cache {
         let dict = userInfo as! [String: NSObject]
         let notification = CKNotification(fromRemoteNotificationDictionary: dict)
         
-        switch notification.notificationType {
+        guard let notificationType = notification?.notificationType else {
+            return
+        }
+        
+        switch notificationType {
         case CKNotificationType.query:
             let queryNotification = notification as! CKQueryNotification
             self.delegate.query(notification: queryNotification, fetchCompletionHandler: completionHandler)
@@ -118,6 +122,9 @@ public final class Cache {
             // TODO
             break
         case CKNotificationType.recordZone:
+            // TODO
+            break
+        default:
             // TODO
             break
         }
@@ -156,13 +163,13 @@ public final class Cache {
         }.disposed(by: disposeBag)
     }
 
-    public func fetchZoneChanges(recordZoneIDs: [CKRecordZoneID], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        var optionsByRecordZoneID: [CKRecordZoneID: CKFetchRecordZoneChangesOptions] = [:]
+    public func fetchZoneChanges(recordZoneIDs: [CKRecordZone.ID], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        var optionsByRecordZoneID: [CKRecordZone.ID: CKFetchRecordZoneChangesOperation.ZoneOptions] = [:]
 
         let tokenMap = self.local.zoneTokenMap(for: Cache.zoneTokenMapKey)
         for recordZoneID in recordZoneIDs {
             if let token = tokenMap[recordZoneID] {
-                let options = CKFetchRecordZoneChangesOptions()
+                let options = CKFetchRecordZoneChangesOperation.ZoneOptions()
                 options.previousServerChangeToken = token
                 optionsByRecordZoneID[recordZoneID] = options
             }
@@ -198,7 +205,7 @@ public final class Cache {
             .disposed(by: disposeBag)
     }
 
-    public func cacheChanged(zoneID: CKRecordZoneID) {
+    public func cacheChanged(zoneID: CKRecordZone.ID) {
         self.cachedZoneIDs.append(zoneID)
     }
 

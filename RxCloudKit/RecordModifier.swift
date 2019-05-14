@@ -13,7 +13,7 @@ public enum RecordModifyEvent {
     case progress(CKRecord, Double) // save progress
     case result(CKRecord, Error?) // save result
     case changed([CKRecord])
-    case deleted([CKRecordID])
+    case deleted([CKRecord.ID])
 }
 
 final class RecordModifier {
@@ -26,9 +26,9 @@ final class RecordModifier {
     private let observer: Observer
     private let database: CKDatabase
     private let records: [CKRecord]?
-    private let recordIDs: [CKRecordID]?
+    private let recordIDs: [CKRecord.ID]?
     
-    init(observer: Observer, database: CKDatabase, recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?) {
+    init(observer: Observer, database: CKDatabase, recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecord.ID]?) {
         self.observer = observer
         self.database = database
         self.records = records
@@ -36,7 +36,7 @@ final class RecordModifier {
         self.batch(recordsToSave: records, recordIDsToDelete: recordIDs)
     }
     
-    private func batch(recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecordID]?) {
+    private func batch(recordsToSave records: [CKRecord]?, recordIDsToDelete recordIDs: [CKRecord.ID]?) {
         let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: recordIDs)
         operation.perRecordProgressBlock = self.perRecordProgressBlock
         operation.perRecordCompletionBlock = self.perRecordCompletionBlock
@@ -57,7 +57,7 @@ final class RecordModifier {
         return index + chunk
     }
     
-    private func tuple() -> ([CKRecord]?, [CKRecordID]?) {
+    private func tuple() -> ([CKRecord]?, [CKRecord.ID]?) {
         let until = self.until()
         return (self.records == nil ? nil : Array(self.records![index..<until]), self.recordIDs == nil ? nil : Array(self.recordIDs![index..<until]))
     }
@@ -74,7 +74,7 @@ final class RecordModifier {
        observer.on(.next(.result(record, error)))
     }
     
-    private func modifyRecordsCompletionBlock(records: [CKRecord]?, recordIDs: [CKRecordID]?, error: Error?) {
+    private func modifyRecordsCompletionBlock(records: [CKRecord]?, recordIDs: [CKRecord.ID]?, error: Error?) {
         if let error = error {
             if let ckError = error as? CKError {
                 switch ckError.code {

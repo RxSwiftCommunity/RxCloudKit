@@ -11,8 +11,8 @@ import CloudKit
 
 public enum RecordEvent {
     case changed(CKRecord)
-    case deleted(CKRecordID)
-    case token(CKRecordZoneID, CKServerChangeToken)
+    case deleted(CKRecord.ID)
+    case token(CKRecordZone.ID, CKServerChangeToken)
 }
 
 final class RecordChangeFetcher {
@@ -22,10 +22,10 @@ final class RecordChangeFetcher {
     private let observer: Observer
     private let database: CKDatabase
     
-    private let recordZoneIDs: [CKRecordZoneID]
-    private var optionsByRecordZoneID: [CKRecordZoneID : CKFetchRecordZoneChangesOptions]
+    private let recordZoneIDs: [CKRecordZone.ID]
+    private var optionsByRecordZoneID: [CKRecordZone.ID : CKFetchRecordZoneChangesOperation.ZoneOptions]
     
-    init(observer: Observer, database: CKDatabase, recordZoneIDs: [CKRecordZoneID], optionsByRecordZoneID: [CKRecordZoneID : CKFetchRecordZoneChangesOptions]? = nil) {
+    init(observer: Observer, database: CKDatabase, recordZoneIDs: [CKRecordZone.ID], optionsByRecordZoneID: [CKRecordZone.ID : CKFetchRecordZoneChangesOperation.ZoneOptions]? = nil) {
         self.observer = observer
         self.database = database
         self.recordZoneIDs = recordZoneIDs
@@ -39,12 +39,12 @@ final class RecordChangeFetcher {
         self.observer.on(.next(.changed(record)))
     }
     
-    private func recordWithIDWasDeletedBlock(recordID: CKRecordID, undocumented: String) {
+    private func recordWithIDWasDeletedBlock(recordID: CKRecord.ID, undocumented: String) {
         print("\(recordID)|\(undocumented)") // TEMP undocumented?
         self.observer.on(.next(.deleted(recordID)))
     }
     
-    private func recordZoneChangeTokensUpdatedBlock(zoneID: CKRecordZoneID, serverChangeToken: CKServerChangeToken?, clientChangeTokenData: Data?) {
+    private func recordZoneChangeTokensUpdatedBlock(zoneID: CKRecordZone.ID, serverChangeToken: CKServerChangeToken?, clientChangeTokenData: Data?) {
         self.updateToken(zoneID: zoneID, serverChangeToken: serverChangeToken)
         
         if let token = serverChangeToken {
@@ -53,7 +53,7 @@ final class RecordChangeFetcher {
         // TODO clientChangeTokenData?
     }
     
-    private func recordZoneFetchCompletionBlock(zoneID: CKRecordZoneID, serverChangeToken: CKServerChangeToken?, clientChangeTokenData: Data?, moreComing: Bool, recordZoneError: Error?) {
+    private func recordZoneFetchCompletionBlock(zoneID: CKRecordZone.ID, serverChangeToken: CKServerChangeToken?, clientChangeTokenData: Data?, moreComing: Bool, recordZoneError: Error?) {
         // TODO clientChangeTokenData ?
         if let error = recordZoneError {
             //            observer.on(.error(error)) // special handling for CKErrorChangeTokenExpired (purge local cache, fetch with token=nil)
@@ -86,9 +86,9 @@ final class RecordChangeFetcher {
     
     // MARK:- custom
     
-    private func updateToken(zoneID: CKRecordZoneID, serverChangeToken: CKServerChangeToken?) {
+    private func updateToken(zoneID: CKRecordZone.ID, serverChangeToken: CKServerChangeToken?) {
         // token, limit, fields (nil = all, [] = no user fields)
-        let options = self.optionsByRecordZoneID[zoneID] ?? CKFetchRecordZoneChangesOptions()
+        let options = self.optionsByRecordZoneID[zoneID] ?? CKFetchRecordZoneChangesOperation.ZoneOptions()
         options.previousServerChangeToken = serverChangeToken
         self.optionsByRecordZoneID[zoneID] = options
     }

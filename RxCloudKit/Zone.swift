@@ -10,15 +10,15 @@ import CloudKit
 
 /*public*/ class Zone {
     
-    public static func id(name: String) -> CKRecordZoneID {
+    public static func id(name: String) -> CKRecordZone.ID {
         if #available(iOS 10.0, *) {
-            return CKRecordZoneID(zoneName: name, ownerName: CKCurrentUserDefaultName)
+            return CKRecordZone.ID(zoneName: name, ownerName: CKCurrentUserDefaultName)
         } else {
-            return CKRecordZoneID(zoneName: name, ownerName: CKOwnerDefaultName)
+            return CKRecordZone.ID(zoneName: name, ownerName: CKOwnerDefaultName)
         }
     }
     
-    public static func create(zoneID: CKRecordZoneID) -> CKRecordZone {
+    public static func create(zoneID: CKRecordZone.ID) -> CKRecordZone {
         let zone = CKRecordZone(zoneID: zoneID)
         return zone
     }

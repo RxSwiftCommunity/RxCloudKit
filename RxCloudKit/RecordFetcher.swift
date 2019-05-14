@@ -28,7 +28,7 @@ final class RecordFetcher {
         self.observer.on(.next(record))
     }
     
-    private func queryCompletionBlock(cursor: CKQueryCursor?, error: Error?) {
+    private func queryCompletionBlock(cursor: CKQueryOperation.Cursor?, error: Error?) {
         if let error = error {
             observer.on(.error(error))
             return
