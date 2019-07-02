@@ -81,9 +81,9 @@ extension AppDelegate: CacheDelegate {
 Carthage setup.
 
 ```
-github "maxvol/RxCloudKit" ~> 1.0.0
+github "RxSwiftCommunity/RxCloudKit" ~> 1.0.0
 
 ```
 
-
+Copyright (c) RxSwiftCommunity
 
