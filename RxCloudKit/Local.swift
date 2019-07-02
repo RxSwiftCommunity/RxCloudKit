@@ -3,7 +3,7 @@
 //  RxCloudKit
 //
 //  Created by Maxim Volgin on 11/08/2017.
-//  Copyright © 2017 Maxim Volgin. All rights reserved.
+//  Copyright (c) RxSwiftCommunity. All rights reserved.
 //
 // local storage for Cache class
 

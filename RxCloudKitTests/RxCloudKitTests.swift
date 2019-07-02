@@ -3,7 +3,7 @@
 //  RxCloudKitTests
 //
 //  Created by Maxim Volgin on 22/06/2017.
-//  Copyright © 2017 Maxim Volgin. All rights reserved.
+//  Copyright (c) RxSwiftCommunity. All rights reserved.
 //
 
 import XCTest

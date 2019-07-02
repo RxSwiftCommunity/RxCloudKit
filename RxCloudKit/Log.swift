@@ -3,7 +3,7 @@
 //  RxCloudKit
 //
 //  Created by Maxim Volgin on 02/11/2017.
-//  Copyright © 2017 Maxim Volgin. All rights reserved.
+//  Copyright (c) RxSwiftCommunity. All rights reserved.
 //
 
 import os.log
